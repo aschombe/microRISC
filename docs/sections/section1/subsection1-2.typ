@@ -19,3 +19,5 @@ Every opcode is 6 bits wide. Each bit will be a dedicated control signal:
   [Control Signal 4],
   [Control Signal 5],
 )
+
+There are also other control signals that are not part of the opcode. These are:

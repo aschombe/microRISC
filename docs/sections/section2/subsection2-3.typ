@@ -70,7 +70,7 @@ These are other instructions that don't fit under the existing categories:
     [Unused],
   ),
   [NOP],
-  [Item2.30],
+  [000000],
   [26 bits],
 )
 
