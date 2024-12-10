@@ -3,8 +3,9 @@ microRISC is a simple, and extensive CPU architecture implemented in Logisim.
 
 ## Features
 - Detailed Manual [here](docs/main.pdf)
-- 32 32-bit General Purpose Registers
+- 30 32-bit General Purpose Registers
 - CMP Register (results of comparison)
+- Hardware Stack and Stack Pointer
 - 32-bit Instructions
 - Multitude of operations (check manual for specifics):
   - Arithmetic
