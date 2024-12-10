@@ -1,5 +1,3 @@
-#import "@preview/curryst:0.3.0": rule, proof-tree
-
 #set page(
   paper: "a4",
   numbering: "<1>",
@@ -11,7 +9,7 @@
 )
 
 #set document(
-  title: "CS516: Compiler Design & Implementation Notes",
+  title: "microRISC",
   author: "Andrew Schomber",
 )
 
