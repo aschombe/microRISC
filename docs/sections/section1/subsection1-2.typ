@@ -20,4 +20,25 @@ Every opcode is 6 bits wide. Each bit will be a dedicated control signal:
   [Control Signal 5],
 )
 
+There are also other control signals implied by the opcode. These are:
+
+#table(
+  columns: 6,
+  table.header(
+    [Bit 0],
+    [Bit 1],
+    [Bit 2],
+    [Bit 3],
+    [Bit 4],
+    [Bit 5],
+  ),
+  [Arithmetic and Logic],
+  [Memory],
+  [Branch],
+  [Other],
+  [],
+  [],
+)
+
+
 There are also other control signals that are not part of the opcode. These are:
