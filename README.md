@@ -5,7 +5,7 @@ microRISC is a simple, and extensive CPU architecture implemented in Logisim.
 - Detailed Manual [here](docs/main.pdf)
 - 30 32-bit General Purpose Registers
 - CMP Register (results of comparison)
-- Hardware Stack and Stack Pointer
+- Hardware Stack and Stack Pointer (SP is a register)
 - 32-bit Instructions
 - Multitude of operations (check manual for specifics):
   - Arithmetic
@@ -13,6 +13,7 @@ microRISC is a simple, and extensive CPU architecture implemented in Logisim.
   - Memory
   - Control Flow
 - Simple Instruction Set and Assembly Language
+- Easy to use Assembler
 
 ## Usage
 1. Clone the [repository](https://github.com/aschombe/microRISC)
@@ -28,6 +29,13 @@ python3 assembler.py <input_file_name> [-o] <output_file_name>
 ## TODO List
 - [ ] Manual
 - [ ] Design the architecture/spec
+    - [ ] How to store labels and the data section
+    - [ ] Assign opcodes and control signals for opcode bits
+    - [ ] Outline memory layouts
+    - [ ] Decide how stack will work
 - [x] Define the instruction set
 - [ ] Implement the architecture in Logisim
 - [ ] Write an assembler
+    - [ ] Add more error checking (expected_count)
+    - [ ] Decide how to handle data section and labels
+
