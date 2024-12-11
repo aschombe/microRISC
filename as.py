@@ -1,3 +1,4 @@
+import argparse
 import sys
 import os
 
@@ -206,8 +207,6 @@ def extract_data(lines) -> list:
 def assemble_data_section(data_section) -> None:
     print("Warning: Data section not supported yet")
     return
-
-import argparse
 
 # main function
 def main() -> None:
