@@ -40,9 +40,10 @@ instruction_set = {
     "MOV":  {"opcode": "111111", "type": "dynamic",   "expected_count": 0}
 }
 
-# this will be "label": "address" pairs where address is the next instruction's address (nth instruction's address is n - 1)
+# this will be "label": "address" pairs where address is the next instruction's address
 labels = { }
 
+# read the input file
 def read_file(file_name) -> list:
     try:
         with open(file_name, "r") as f:
@@ -52,6 +53,7 @@ def read_file(file_name) -> list:
         print("File not found")
         exit()
 
+# resolve the register to its binary representation
 def resolve_register(register) -> str:
     try:
         return registers[register.upper()]
@@ -59,6 +61,7 @@ def resolve_register(register) -> str:
         print("Error: Invalid register: " + register)
         sys.exit(1)
 
+# resolve the instruction to its binary opcode representation
 def resolve_opcode(opcode) -> str:
     try:
         return instruction_set[opcode.upper()]["opcode"]
@@ -66,6 +69,7 @@ def resolve_opcode(opcode) -> str:
         print("Error: Invalid opcode: " + opcode)
         sys.exit(1)
 
+# resolve the immediate value to its binary representation
 def resolve_immediate(imm) -> str:
     try:
         return format(int(imm), "012b")
@@ -73,6 +77,7 @@ def resolve_immediate(imm) -> str:
         print("Error: Invalid immediate value: " + imm)
         sys.exit(1)
 
+# resolve the label to its address
 def resolve_label(label) -> str:
     try:
         return labels[label.upper()]
@@ -80,6 +85,7 @@ def resolve_label(label) -> str:
         print("Error: Invalid label: " + label)
         sys.exit(1)
 
+# extract the text section from the input file
 def extract_text(lines) -> list:
     text_section = []
     for i, line in enumerate(lines):
@@ -91,6 +97,7 @@ def extract_text(lines) -> list:
 
     return text_section
 
+# assemble the text section
 def assemble_text_section(text_section) -> None:
     machine_code = [] 
     for line in text_section:
@@ -165,18 +172,17 @@ def assemble_text_section(text_section) -> None:
             print("Error: Invalid instruction: " + instr)
             sys.exit(1)
 
+    # remove the old instructions.o file if it exists
     if os.path.exists("instructions.o"):
         os.remove("instructions.o")
 
-    # iterate through the machine code, find every label and replace it with its address
-    # so for every binary machine code line, check if it contains a label, if it does, replace it with its address
+    # resolve labels to their addresses inplace
     for i, code in enumerate(machine_code):
         for label in labels:
             if label in code:
-                print(machine_code[i])
                 machine_code[i] = code.replace(label, resolve_label(label))
-                print(machine_code[i])
 
+    # write the machine code to a file
     with open("instructions.o", "w") as f:
         f.write("v3.0 hex words addressed\n")
         for i, code in enumerate(machine_code):
@@ -184,6 +190,7 @@ def assemble_text_section(text_section) -> None:
 
     return
 
+# extract the data section from the input file
 def extract_data(lines) -> list:
     data_section = []
     for i, line in enumerate(lines):
@@ -195,16 +202,20 @@ def extract_data(lines) -> list:
 
     return data_section
 
+# assemble the data section
 def assemble_data_section(data_section) -> None:
     print("Warning: Data section not supported yet")
     return
 
-def main() -> None:
-    if len(sys.argv) != 2:
-        print("Usage: python3 as.py <input_file>")
-        sys.exit(1)
+import argparse
 
-    input_file = sys.argv[1]
+# main function
+def main() -> None:
+    parser = argparse.ArgumentParser(description="Assembler for the microRISC processor")
+    parser.add_argument("input_file", help="The input file to be assembled")
+    args = parser.parse_args()
+    input_file = args.input_file
+
     if not os.path.exists(input_file):
         print("Error: File not found")
         sys.exit(1)
