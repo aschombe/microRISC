@@ -7,7 +7,7 @@
       <a name="appearance" val="classic"/>
     </tool>
     <tool name="Tunnel">
-      <a name="facing" val="south"/>
+      <a name="facing" val="east"/>
       <a name="width" val="32"/>
     </tool>
   </lib>
@@ -82,7 +82,6 @@
       <a name="label" val="Instr"/>
       <a name="width" val="32"/>
     </comp>
-    <comp lib="0" loc="(70,50)" name="Clock"/>
     <comp lib="8" loc="(225,555)" name="Text">
       <a name="font" val="SansSerif bold 28"/>
       <a name="text" val="Stage 3: EX"/>
@@ -95,9 +94,9 @@
       <a name="font" val="SansSerif bold 28"/>
       <a name="text" val="Stage 1: IF"/>
     </comp>
+    <comp loc="(130,300)" name="ControlUnit"/>
     <comp loc="(130,570)" name="ALU"/>
     <comp loc="(350,150)" name="PC"/>
-    <comp loc="(350,300)" name="ControlUnit"/>
     <comp loc="(350,450)" name="RegFile"/>
     <wire from="(100,150)" to="(130,150)"/>
     <wire from="(100,170)" to="(130,170)"/>
@@ -1416,8 +1415,21 @@
     <a name="circuit" val="MEM"/>
     <a name="circuitnamedboxfixedsize" val="true"/>
     <a name="simulationFrequency" val="1.0"/>
-    <comp lib="4" loc="(270,270)" name="RAM">
-      <a name="appearance" val="logisim_evolution"/>
+    <comp lib="0" loc="(50,50)" name="Clock"/>
+    <comp lib="0" loc="(500,360)" name="Tunnel">
+      <a name="facing" val="east"/>
+      <a name="label" val="CLK"/>
     </comp>
+    <comp lib="0" loc="(60,50)" name="Tunnel">
+      <a name="label" val="CLK"/>
+    </comp>
+    <comp lib="4" loc="(490,290)" name="RAM">
+      <a name="addrWidth" val="24"/>
+      <a name="appearance" val="logisim_evolution"/>
+      <a name="dataWidth" val="32"/>
+      <a name="enables" val="line"/>
+      <a name="label" val="DRAM"/>
+    </comp>
+    <wire from="(50,50)" to="(60,50)"/>
   </circuit>
 </project>
