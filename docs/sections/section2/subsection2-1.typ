@@ -61,14 +61,49 @@ The following arithmetic and logical operations are supported:
   [5 bits],
   [5 bits],
   [5 bits],
-  [LDR Rd, [Rn, Rm]],
-  [000010],
+)
+
+#table(
+  columns: 4,
+  table.header(
+    [Syntax],
+    [Opcode],
+    [Rd],
+    [Unused],
+  ),
+  [NEG Rd],
+  [010101],
+  [5 bits],
+  [21 bits],
+)
+
+#table(
+  columns: 5,
+  table.header(
+    [Syntax],
+    [Opcode],
+    [Rd],
+    [Rn],
+    [Unused],
+  ),
+  [MOV Rd, Rn],
+  [111111],
   [5 bits],
   [5 bits],
+  [16 bits],
+)
+
+#table(
+  columns: 4,
+  table.header(
+    [Syntax],
+    [Opcode],
+    [Rd],
+    [Imm],
+  ),
+  [MOV Rd, Imm],
+  [111111],
   [5 bits],
-  [STR Rd, [Rn, Rm]],
-  [000110],
-  [5 bits],
-  [5 bits],
-  [5 bits],
-  )
+  [21 bits],
+)
+

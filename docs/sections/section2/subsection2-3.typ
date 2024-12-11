@@ -1,6 +1,48 @@
-== Other
+== Branching
 
-These are other instructions that don't fit under the existing categories:
+The following branching instructions are supported:
+
+#table(
+  columns: 4,
+  table.header(
+    [Syntax],
+    [Opcode],
+    [Label],
+    [Unused],
+  ),
+  [B Label],
+  [000100],
+  [20 bits],
+  [5 bits],
+  [BL Label],
+  [001100],
+  [20 bits],
+  [5 bits],
+  [BEQ Label],
+  [010100],
+  [20 bits],
+  [5 bits],
+  [BNE Label],
+  [011100],
+  [20 bits],
+  [5 bits],
+  [BGT Label],
+  [100100],
+  [20 bits],
+  [5 bits],
+  [BLT Label],
+  [101100],
+  [20 bits],
+  [5 bits],
+  [BGE Label],
+  [110100],
+  [20 bits],
+  [5 bits],
+  [BLE Label],
+  [111100],
+  [20 bits],
+  [5 bits],
+)
 
 #table(
   columns: 5,
@@ -11,8 +53,8 @@ These are other instructions that don't fit under the existing categories:
     [Rn],
     [Unused],
   ),
-  [MOV Rd, Rn],
-  [111111],
+  [CMP Rd, Rn],
+  [100000],
   [5 bits],
   [5 bits],
   [16 bits],
@@ -24,42 +66,19 @@ These are other instructions that don't fit under the existing categories:
     [Syntax],
     [Opcode],
     [Rd],
-    [Imm],
-  ),
-  [MOV Rd, Imm],
-  [111111],
-  [5 bits],
-  [21 bits],
-)
-
-#table(
-  columns: 5,
-  table.header(
-    [Syntax],
-    [Opcode],
-    [Rd],
     [Label],
     [Unused],
   ),
-  [ADR Rd, Label],
-  [001010],
+  [CBZ Rd, Label],
+  [110000],
   [5 bits],
   [20 bits],
   [1 bit],
-)
-
-#table(
-  columns: 4,
-  table.header(
-    [Syntax],
-    [Opcode],
-    [Rd],
-    [Unused],
-  ),
-  [NEG Rd],
-  [010101],
+  [CBNZ Rd, Label],
+  [101000],
   [5 bits],
-  [21 bits],
+  [20 bits],
+  [1 bit],
 )
 
 #table(
@@ -69,10 +88,7 @@ These are other instructions that don't fit under the existing categories:
     [Opcode],
     [Unused],
   ),
-  [NOP],
-  [000000],
+  [RET],
+  [111000],
   [26 bits],
 )
-
-
-
