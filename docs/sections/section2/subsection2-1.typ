@@ -60,7 +60,7 @@ The following arithmetic and logical operations are supported:
   [010011],
   [5 bits],
   [5 bits],
-  [5 bits]
+  [5 bits],
   [LDR Rd, [Rn, Rm]],
   [000010],
   [5 bits],

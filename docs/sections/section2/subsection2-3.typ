@@ -12,7 +12,7 @@ These are other instructions that don't fit under the existing categories:
     [Unused],
   ),
   [MOV Rd, Rn],
-  [111111]
+  [111111],
   [5 bits],
   [5 bits],
   [16 bits],
@@ -27,7 +27,7 @@ These are other instructions that don't fit under the existing categories:
     [Imm],
   ),
   [MOV Rd, Imm],
-  [111111]
+  [111111],
   [5 bits],
   [21 bits],
 )
