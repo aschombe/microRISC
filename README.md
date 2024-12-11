@@ -20,7 +20,7 @@ microRISC is a simple, and extensive CPU architecture implemented in Logisim.
 2. Open a terminal and navigate to the root of the repository
 3. Run the assembler with the following command:
 ```bash
-python3 assembler.py <input_file_name> [-o] <output_file_name>
+python3 as.py <input_file_name>
 ```
 4. Open Logisim and load the `microRISC.circ` file
 5. Load instructions.o into the Instruction Memory, data.o into the Data Memory
@@ -29,13 +29,12 @@ python3 assembler.py <input_file_name> [-o] <output_file_name>
 ## TODO List
 - [ ] Manual
 - [ ] Design the architecture/spec
-    - [ ] How to the data section
     - [ ] Assign opcodes and control signals for opcode bits
     - [ ] Outline memory layouts
     - [ ] Decide how stack will work
 - [x] Define the instruction set
 - [ ] Implement the architecture in Logisim
 - [ ] Write an assembler
-    - [ ] Add more error checking (expected_count)
-    - [ ] Decide how to handle data section and labels
+    - [ ] Maybe add line, column and snippet information to error output
+    - [ ] Decide how to handle data section
 
