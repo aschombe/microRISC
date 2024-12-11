@@ -29,7 +29,7 @@ python3 assembler.py <input_file_name> [-o] <output_file_name>
 ## TODO List
 - [ ] Manual
 - [ ] Design the architecture/spec
-    - [ ] How to store labels and the data section
+    - [ ] How to the data section
     - [ ] Assign opcodes and control signals for opcode bits
     - [ ] Outline memory layouts
     - [ ] Decide how stack will work

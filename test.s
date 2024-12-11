@@ -1,2 +1,6 @@
 .text
-nop r1, r2
+nop
+test:
+
+b test
+

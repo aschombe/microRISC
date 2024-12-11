@@ -40,6 +40,9 @@ instruction_set = {
     "MOV":  {"opcode": "111111", "type": "dynamic",   "expected_count": 0}
 }
 
+# this will be "label": "address" pairs where address is the next instruction's address (nth instruction's address is n - 1)
+labels = { }
+
 def read_file(file_name) -> list:
     try:
         with open(file_name, "r") as f:
@@ -71,8 +74,11 @@ def resolve_immediate(imm) -> str:
         sys.exit(1)
 
 def resolve_label(label) -> str:
-    print("Warning: Label resolution not supported yet")
-    return
+    try:
+        return labels[label.upper()]
+    except KeyError:
+        print("Error: Invalid label: " + label)
+        sys.exit(1)
 
 def extract_text(lines) -> list:
     text_section = []
@@ -93,6 +99,11 @@ def assemble_text_section(text_section) -> None:
         if not tokens:
             continue
 
+        if tokens[0][-1] == ":":
+            labels[tokens[0][:-1].upper()] = format(len(machine_code), "08b")
+            tokens = tokens[1:]
+            continue
+
         instr = tokens[0].upper()
 
         opcode = resolve_opcode(instr)
@@ -111,7 +122,7 @@ def assemble_text_section(text_section) -> None:
                 print("Error: Invalid number of operands for " + instr)
                 sys.exit(1)
             else:
-                label = tokens[1]
+                label = tokens[1].upper()
                 machine_code.append(opcode + label)
         elif instruction_set[instr]["type"] == "two_reg":
             if len(tokens) != instruction_set[instr]["expected_count"]:
@@ -146,7 +157,7 @@ def assemble_text_section(text_section) -> None:
                 sys.exit(1)
             else:
                 rd = resolve_register(tokens[1])
-                label = tokens[2]
+                label = tokens[2].upper()
                 machine_code.append(opcode + rd + label)
         elif instruction_set[instr]["type"] == "no_op":
             machine_code.append(opcode + "00000000000000000000000000")
@@ -156,6 +167,15 @@ def assemble_text_section(text_section) -> None:
 
     if os.path.exists("instructions.o"):
         os.remove("instructions.o")
+
+    # iterate through the machine code, find every label and replace it with its address
+    # so for every binary machine code line, check if it contains a label, if it does, replace it with its address
+    for i, code in enumerate(machine_code):
+        for label in labels:
+            if label in code:
+                print(machine_code[i])
+                machine_code[i] = code.replace(label, resolve_label(label))
+                print(machine_code[i])
 
     with open("instructions.o", "w") as f:
         f.write("v3.0 hex words addressed\n")

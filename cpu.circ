@@ -95,10 +95,10 @@
       <a name="font" val="SansSerif bold 28"/>
       <a name="text" val="Stage 1: IF"/>
     </comp>
-    <comp loc="(130,450)" name="RegFile"/>
     <comp loc="(130,570)" name="ALU"/>
     <comp loc="(350,150)" name="PC"/>
     <comp loc="(350,300)" name="ControlUnit"/>
+    <comp loc="(350,450)" name="RegFile"/>
     <wire from="(100,150)" to="(130,150)"/>
     <wire from="(100,170)" to="(130,170)"/>
   </circuit>
