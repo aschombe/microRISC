@@ -38,6 +38,8 @@ instruction_set = {
     "CBZ":  {"opcode": "110000", "type": "reg_label", "expected_count": 3},
     "CBNZ": {"opcode": "101000", "type": "reg_label", "expected_count": 3},
     "RET":  {"opcode": "111000", "type": "no_op",     "expected_count": 1},
+    # MOV is a special case where it can take either two registers or a register and an immediate value
+    # So the only thing being used from the instruction set is the opcode
     "MOV":  {"opcode": "111111", "type": "dynamic",   "expected_count": 0}
 }
 
@@ -102,11 +104,12 @@ def extract_text(lines) -> list:
 def assemble_text_section(text_section) -> None:
     machine_code = [] 
     for line in text_section:
-        tokens = line.replace(",", " ").replace("[", " ").replace("]", " ").replace("#", " ").split()
+        tokens = line.replace(",", " ").replace("[", " ").replace("]", " ").replace("#", " ").replace("//", " // ").split()
 
-        if not tokens:
+        if not tokens or tokens[0] == "//":
             continue
-
+        
+        # check if the line is a label
         if tokens[0][-1] == ":":
             labels[tokens[0][:-1].upper()] = format(len(machine_code), "08b")
             tokens = tokens[1:]
