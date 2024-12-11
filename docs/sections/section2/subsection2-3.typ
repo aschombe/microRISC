@@ -12,7 +12,7 @@ These are other instructions that don't fit under the existing categories:
     [Unused],
   ),
   [MOV Rd, Rn],
-  [Item2.26],
+  [111111]
   [5 bits],
   [5 bits],
   [16 bits],
@@ -27,7 +27,7 @@ These are other instructions that don't fit under the existing categories:
     [Imm],
   ),
   [MOV Rd, Imm],
-  [Item2.27],
+  [111111]
   [5 bits],
   [21 bits],
 )
@@ -42,7 +42,7 @@ These are other instructions that don't fit under the existing categories:
     [Unused],
   ),
   [ADR Rd, Label],
-  [Item2.28],
+  [001010],
   [5 bits],
   [20 bits],
   [1 bit],
@@ -57,7 +57,7 @@ These are other instructions that don't fit under the existing categories:
     [Unused],
   ),
   [NEG Rd],
-  [Item2.29],
+  [010101],
   [5 bits],
   [21 bits],
 )

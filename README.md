@@ -28,7 +28,6 @@ python3 assembler.py <input_file_name> [-o] <output_file_name>
 
 ## TODO List
 - [ ] Manual
-    - [ ] Add opcodes (check assembler for opcodes)
 - [ ] Design the architecture/spec
     - [ ] How to store labels and the data section
     - [ ] Assign opcodes and control signals for opcode bits
