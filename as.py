@@ -104,10 +104,15 @@ def extract_text(lines) -> list:
 def assemble_text_section(text_section) -> None:
     machine_code = [] 
     for line in text_section:
-        tokens = line.replace(",", " ").replace("[", " ").replace("]", " ").replace("#", " ").replace("//", " // ").split()
+        tokens = line.replace(",", " ").replace("[", " ").replace("]", " ").replace("#", " ").replace("//", " // ").replace("/*", " /* ").replace("*/", " */ ").split()
 
+        # skip empty lines and comments
         if not tokens or tokens[0] == "//":
             continue
+
+        # add support for comments at the end of the line
+        if "//" in tokens:
+            tokens = tokens[:tokens.index("//")]
         
         # check if the line is a label
         if tokens[0][-1] == ":":
@@ -218,18 +223,26 @@ def main() -> None:
     args = parser.parse_args()
     input_file = args.input_file
 
+    # check if the file exists
     if not os.path.exists(input_file):
         print("Error: File not found")
         sys.exit(1)
 
+    # check file extension
+    if not input_file.endswith(".s"):
+        print("Error: Invalid file extension")
+        sys.exit(1)
+
     lines = read_file(input_file)
 
+    # check if the file is empty
     if not lines:
         print("Error: Input file is empty")
         sys.exit(1)
     
     text_section = extract_text(lines)
 
+    # check if the text section is empty
     if not text_section:
         print("Error: No text section found")
         sys.exit(1)
@@ -238,6 +251,7 @@ def main() -> None:
 
     data_section = extract_data(lines)
 
+    # check if the data section is empty
     if not data_section:
         print("Warning: No data section found")
     else:
