@@ -10,8 +10,75 @@ These are other instructions that don't fit under the existing categories:
     [Unused],
   ),
   [NOP],
-  [000000],
+  [110000],
   [26 bits],
+  // [RET],
+  // [110001],
+  // [26 bits],
+)
+
+#table(
+  columns: 5,
+  table.header(
+    [Syntax],
+    [Opcode],
+    [Rd],
+    [Rn],
+    [Unused],
+  ),
+  [MOV Rd, Rn],
+  [110010],
+  [5 bits],
+  [5 bits],
+  [16 bits],
+)
+
+#table(
+  columns: 4,
+  table.header(
+    [Syntax],
+    [Opcode],
+    [Rd],
+    [Imm],
+  ),
+  [MOV Rd, Imm],
+  [110010],
+  [5 bits],
+  [21 bits],
+)
+
+#table(
+  columns: 5,
+  table.header(
+    [Syntax],
+    [Opcode],
+    [Rd],
+    [Rn],
+    [Unused],
+  ),
+  [CMP Rd, Rn],
+  [110011],
+  [5 bits],
+  [5 bits],
+  [16 bits],
+)
+
+#table(
+  columns: 4,
+  table.header(
+    [Syntax],
+    [Opcode],
+    [Rn],
+    [Label],
+  ),
+  [CBZ Rn, Label],
+  [110100],
+  [5 bits],
+  [21 bits],
+  [CBNZ Rn, Label],
+  [110101],
+  [5 bits],
+  [21 bits],
 )
 
 There is also support for single line comments and end of line comments:

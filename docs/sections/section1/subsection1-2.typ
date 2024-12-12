@@ -20,25 +20,22 @@ Every opcode is 6 bits wide. Each bit will be a dedicated control signal:
   [Control Signal 5],
 )
 
-There are also other control signals implied by the opcode. These are:
+There are also other control signals implied by the opcode. The first two bits of the opcode are used to determine the type of instruction:
 
 #table(
-  columns: 6,
+  columns: 2,
   table.header(
-    [Bit 0],
-    [Bit 1],
-    [Bit 2],
-    [Bit 3],
-    [Bit 4],
-    [Bit 5],
+    [Bit 0-1],
+    [Instruction Type],
   ),
-  [Arithmetic and Logic],
+  [00],
+  [Arithmetic/Logic],
+  [01],
   [Memory],
-  [Branch],
-  [Other],
-  [],
-  [],
+  [10],
+  [Branching],
+  [11],
+  [Special],
 )
-
 
 There are also other control signals that are not part of the opcode. These are:

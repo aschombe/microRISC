@@ -11,36 +11,43 @@ registers["CMP"] = "11111"
 
 instruction_set = {
     # expected count is the expected number of tokens in the instruction's line
-    "NOP":  {"opcode": "000000", "type": "no_op",     "expected_count": 1},
-    "ADD":  {"opcode": "000001", "type": "three_reg", "expected_count": 4},
-    "SUB":  {"opcode": "000011", "type": "three_reg", "expected_count": 4},
-    "MUL":  {"opcode": "000101", "type": "three_reg", "expected_count": 4},
-    "DIV":  {"opcode": "000111", "type": "three_reg", "expected_count": 4},
-    "AND":  {"opcode": "001001", "type": "three_reg", "expected_count": 4},
-    "ORR":  {"opcode": "001011", "type": "three_reg", "expected_count": 4},
-    "XOR":  {"opcode": "001101", "type": "three_reg", "expected_count": 4},
-    "LSL":  {"opcode": "001111", "type": "three_reg", "expected_count": 4},
-    "LSR":  {"opcode": "010001", "type": "three_reg", "expected_count": 4},
-    "ASR":  {"opcode": "010011", "type": "three_reg", "expected_count": 4},
-    "NEG":  {"opcode": "010101", "type": "one_reg",   "expected_count": 2},
-    "LDR":  {"opcode": "000010", "type": "three_reg", "expected_count": 4},
-    "STR":  {"opcode": "000110", "type": "three_reg", "expected_count": 4},
-    "ADR":  {"opcode": "001010", "type": "reg_label", "expected_count": 3},
-    "B":    {"opcode": "000100", "type": "label",     "expected_count": 2},
-    "BL":   {"opcode": "001100", "type": "label",     "expected_count": 2},
-    "BEQ":  {"opcode": "010100", "type": "label",     "expected_count": 2},
-    "BNE":  {"opcode": "011100", "type": "label",     "expected_count": 2},
+    # Arithemtic and logic instructions
+    "ADD":  {"opcode": "000000", "type": "three_reg", "expected_count": 4},
+    "SUB":  {"opcode": "000001", "type": "three_reg", "expected_count": 4},
+    "MUL":  {"opcode": "000010", "type": "three_reg", "expected_count": 4},
+    "DIV":  {"opcode": "000011", "type": "three_reg", "expected_count": 4},
+    "AND":  {"opcode": "000100", "type": "three_reg", "expected_count": 4},
+    "ORR":  {"opcode": "000101", "type": "three_reg", "expected_count": 4},
+    "XOR":  {"opcode": "000110", "type": "three_reg", "expected_count": 4},
+    "LSL":  {"opcode": "000111", "type": "three_reg", "expected_count": 4},
+    "LSR":  {"opcode": "001000", "type": "three_reg", "expected_count": 4},
+    "ASR":  {"opcode": "001001", "type": "three_reg", "expected_count": 4},
+    "NEG":  {"opcode": "001010", "type": "one_reg",   "expected_count": 2},
+
+    # Memory instructions
+    "LDR":  {"opcode": "010000", "type": "three_reg", "expected_count": 4},
+    "STR":  {"opcode": "010001", "type": "three_reg", "expected_count": 4},
+    "ADR":  {"opcode": "010010", "type": "reg_label", "expected_count": 3},
+
+    # Branch instructions
+    "B":    {"opcode": "100000", "type": "label",     "expected_count": 2},
+    # "BL":   {"opcode": "100001", "type": "label",     "expected_count": 2},
+    "BEQ":  {"opcode": "100010", "type": "label",     "expected_count": 2},
+    "BNE":  {"opcode": "100011", "type": "label",     "expected_count": 2},
     "BGT":  {"opcode": "100100", "type": "label",     "expected_count": 2},
-    "BLT":  {"opcode": "101100", "type": "label",     "expected_count": 2},
-    "BGE":  {"opcode": "110100", "type": "label",     "expected_count": 2},
-    "BLE":  {"opcode": "111100", "type": "label",     "expected_count": 2},
-    "CMP":  {"opcode": "100000", "type": "two_reg",   "expected_count": 3},
-    "CBZ":  {"opcode": "110000", "type": "reg_label", "expected_count": 3},
-    "CBNZ": {"opcode": "101000", "type": "reg_label", "expected_count": 3},
-    "RET":  {"opcode": "111000", "type": "no_op",     "expected_count": 1},
+    "BLT":  {"opcode": "100101", "type": "label",     "expected_count": 2},
+    "BGE":  {"opcode": "100110", "type": "label",     "expected_count": 2},
+    "BLE":  {"opcode": "100111", "type": "label",     "expected_count": 2},
+
+    # Special instructions
+    "NOP":  {"opcode": "110000", "type": "no_op",     "expected_count": 1},
+    # "RET":  {"opcode": "110001", "type": "no_op",     "expected_count": 1},
     # MOV is a special case where it can take either two registers or a register and an immediate value
     # So the only thing being used from the instruction set is the opcode
-    "MOV":  {"opcode": "111111", "type": "dynamic",   "expected_count": 0}
+    "MOV":  {"opcode": "110010", "type": "dynamic",   "expected_count": 0},
+    "CMP":  {"opcode": "110011", "type": "two_reg",   "expected_count": 3},
+    "CBZ":  {"opcode": "110100", "type": "reg_label", "expected_count": 3},
+    "CBNZ": {"opcode": "110101", "type": "reg_label", "expected_count": 3},
 }
 
 # this will be "label": "address" pairs where address is the next instruction's address

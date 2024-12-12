@@ -27,6 +27,7 @@ python3 as.py <input_file_name>
 6. Run the simulation
 
 ## TODO List
+- [ ] Probably remove BL and RET
 - [ ] Manual
 - [ ] Design the architecture/spec
     - [ ] Assign opcodes and control signals for opcode bits
