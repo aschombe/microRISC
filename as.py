@@ -9,6 +9,7 @@ import re
 registers = {}
 for i in range(32):
     registers["R" + str(i)] = format(i, "05b")
+registers["LR"] = "11101"
 registers["SP"] = "11110"
 registers["CMP"] = "11111"
 
@@ -34,7 +35,7 @@ instruction_set = {
 
     # Branch instructions
     "B":    {"opcode": "100000", "type": "label",     "expected_count": 2},
-    # "BL":   {"opcode": "100001", "type": "label",     "expected_count": 2},
+    "BL":   {"opcode": "100001", "type": "label",     "expected_count": 2},
     "BEQ":  {"opcode": "100010", "type": "label",     "expected_count": 2},
     "BNE":  {"opcode": "100011", "type": "label",     "expected_count": 2},
     "BGT":  {"opcode": "100100", "type": "label",     "expected_count": 2},
@@ -44,7 +45,7 @@ instruction_set = {
 
     # Special instructions
     "NOP":  {"opcode": "110000", "type": "no_op",     "expected_count": 1},
-    # "RET":  {"opcode": "110001", "type": "no_op",     "expected_count": 1},
+    "RET":  {"opcode": "110001", "type": "no_op",     "expected_count": 1},
     # MOV is a special case where it can take either two registers or a register and an immediate value
     # So the only thing being used from its instruction set entry is the opcode
     "MOV":  {"opcode": "110010", "type": "dynamic",   "expected_count": 0},

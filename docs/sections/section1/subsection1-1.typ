@@ -82,9 +82,23 @@ The general purpose registers are used to store data and perform arithmetic oper
 
 The program counter register keeps track of the current instruction being executed. It is automatically incremented after each instruction is executed. It can not be directly accessed or modified by the programmer.
 
+=== Link Register (LR)
+
+The link register is used to store the return address of a function call. When a function is called, the address of the next instruction is stored in the link register. When the function returns, the program counter is set to the value of the link register to resume execution. You can reference it using the LR keyword, or R29.
+
+#table(
+  columns: 2,
+  table.header(
+    [Register],
+    [Binary Representation],
+  ),
+  [LR],
+  [11101],
+)
+
 === Stack Pointer (SP)
 
-The stack pointer register is used to keep track of the top of the stack. Similarly to ARM, you must manually manage the stack pointer. Reference it using the SP keyword.
+The stack pointer register is used to keep track of the top of the stack. Similarly to ARM, you must manually manage the stack pointer. Reference it using the SP keyword, or R30.
 
 #table(
   columns: 2,
@@ -98,7 +112,7 @@ The stack pointer register is used to keep track of the top of the stack. Simila
 
 === CMP Register
 
-The CMP register is used to store the result of a comparison operation. It is set by the CMP instruction, which subtracts the second operand from the first operand and sets the CMP register based on the result. Reference it using the CMP keyword (its an operation and a register).
+The CMP register is used to store the result of a comparison operation. It is set by the CMP instruction, which subtracts the second operand from the first operand and sets the CMP register based on the result. Reference it using the CMP keyword (its an operation and a register), or R31.
 
 #table(
   columns: 2,
