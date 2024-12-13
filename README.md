@@ -41,5 +41,4 @@ python3 as.py <input_file_name>
 - [ ] Write an assembler
     - [ ] Fix tokenizer:
         - [ ] Allows programmer to place commas anywhere and it just accepts it
-    - [ ] Maybe add line, column and snippet information to error output
     - [ ] Decide how to handle data section
