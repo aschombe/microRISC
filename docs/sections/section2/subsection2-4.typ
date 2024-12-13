@@ -40,11 +40,13 @@ These are other instructions that don't fit under the existing categories:
     [Opcode],
     [Rd],
     [Imm],
+    [Unused],
   ),
   [MOV Rd, Imm],
   [110010],
   [5 bits],
   [21 bits],
+  [0 bits],
 )
 
 #table(
@@ -70,15 +72,18 @@ These are other instructions that don't fit under the existing categories:
     [Opcode],
     [Rn],
     [Label],
+    [Unused],
   ),
   [CBZ Rn, Label],
   [110100],
   [5 bits],
   [21 bits],
+  [0 bits],
   [CBNZ Rn, Label],
   [110101],
   [5 bits],
   [21 bits],
+  [0 bits],
 )
 
 There is also support for single line comments and end of line comments:

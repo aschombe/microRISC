@@ -9,17 +9,20 @@ The following memory instructions are supported:
     [Rd],
     [Rn],
     [Rm],
+    [Unused],
   ),
   [LDR Rd, [Rn, Rm]],
   [010000],
   [5 bits],
   [5 bits],
   [5 bits],
+  [11 bits],
   [STR Rd, [Rn, Rm]],
   [010001],
   [5 bits],
   [5 bits],
   [5 bits],
+  [11 bits],
 )
 
 #table(

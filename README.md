@@ -1,5 +1,5 @@
 # microRISC
-microRISC is a simple, and extensive CPU architecture implemented in Logisim.
+microRISC is a easy to understand CPU architecture implemented in Logisim.
 
 ## Features
 - Detailed Manual [here](docs/main.pdf)
@@ -29,12 +29,15 @@ python3 as.py <input_file_name>
 ## TODO List
 - [ ] Manual
 - [ ] Design the architecture/spec
-    - [ ] Assign opcodes and control signals for opcode bits
     - [ ] Outline memory layouts
     - [ ] Decide how stack will work
 - [x] Define the instruction set
 - [ ] Implement the architecture in Logisim
+    - [x] PC
+    - [ ] RegFile
+    - [ ] ALU
+    - [ ] Control Unit
+    - [ ] Memory Unit
 - [ ] Write an assembler
     - [ ] Maybe add line, column and snippet information to error output
     - [ ] Decide how to handle data section
-
