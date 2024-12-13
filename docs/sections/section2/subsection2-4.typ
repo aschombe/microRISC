@@ -34,7 +34,7 @@ These are other instructions that don't fit under the existing categories:
 )
 
 #table(
-  columns: 4,
+  columns: 5,
   table.header(
     [Syntax],
     [Opcode],
@@ -66,7 +66,7 @@ These are other instructions that don't fit under the existing categories:
 )
 
 #table(
-  columns: 4,
+  columns: 5,
   table.header(
     [Syntax],
     [Opcode],

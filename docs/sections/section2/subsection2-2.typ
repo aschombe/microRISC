@@ -2,7 +2,7 @@
 The following memory instructions are supported:
 
 #table(
-  columns: 5,
+  columns: 6,
   table.header(
     [Syntax],
     [Opcode],
