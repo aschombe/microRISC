@@ -9,9 +9,8 @@ import re
 registers = {}
 for i in range(32):
     registers["R" + str(i)] = format(i, "05b")
-registers["LR"] = "11101"
-registers["SP"] = "11110"
-registers["CMP"] = "11111"
+registers["CMP"] = "11110"
+registers["LR"] = "11111"
 
 instruction_set = {
     # expected count is the expected number of tokens in the instruction's line
