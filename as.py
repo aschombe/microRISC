@@ -56,6 +56,9 @@ instruction_set = {
 # this will be "label": "address" pairs where address is the next instruction's (relative to the label) address
 labels = {}
 
+# this will be "adr_label": "address" pairs where address is the index of the label in memory
+adr_labels = {}
+
 # read the input file
 def read_file(file_name) -> list:
     try:
@@ -94,6 +97,14 @@ def resolve_immediate(imm) -> str:
 def resolve_label(label) -> str:
     try:
         return labels[label]
+    except KeyError:
+        print("Error: Invalid label: " + label)
+        sys.exit(1)
+
+# resolve the ADR label to its address
+def resolve_adr_label(label) -> str:
+    try:
+        return adr_labels[label]
     except KeyError:
         print("Error: Invalid label: " + label)
         sys.exit(1)
@@ -304,6 +315,12 @@ def assemble_text_section(text_section) -> None:
             if label.upper() in code:
                 machine_code[i] = code.replace(label.upper(), resolve_label(label))
 
+    # Resolve ADR labels to their addresses
+    for i, code in enumerate(machine_code):
+        for label in adr_labels:
+            if label.upper() in code:
+                machine_code[i] = code.replace(label.upper(), resolve_adr_label(label))
+
     # Write the machine code to a file
     with open("instructions.o", "w") as f:
         f.write("v3.0 hex words addressed\n")
@@ -324,9 +341,87 @@ def extract_data(lines) -> list:
 
     return data_section
 
+def tokenize_data(line) -> tuple:
+    if line.startswith("//"):
+        return None, [], None
+
+    # Remove comments (start of line or after an instruction, //)
+    line = re.sub(r"//.*", "", line)
+
+    # Remove leading and trailing whitespaces
+    line = line.strip()
+
+    # Split the line on spaces, then on commas
+    tokens = re.split(r"\s|:", line)
+
+    # Remove empty tokens
+    tokens = [token for token in tokens if token]
+
+    # Remove leading and trailing whitespaces from each token
+    tokens = [token.strip() for token in tokens]
+
+    label = None
+    values = []
+
+    # Check if the line is empty
+    if not line:
+        return label, values
+
+    # Use regex to check if its a label, and make sure theres no instruction on the same line (throw an error)
+    if re.match(r"^[a-zA-Z_][a-zA-Z0-9_]*:$", line):
+        if len(tokens) > 1:
+            print(f"Error: Label '{line}' must be on its own line.")
+            sys.exit(1)
+        label = line[:-1]
+        return label, values
+
+    # based on what the instruction is, tokenize it accordingly
+    label = tokens[0].strip()
+
+    # Check if the label is already in the labels dictionary
+    if label in labels:
+        print(f"Error: Label '{label}' already defined.")
+        sys.exit(1)
+
+    # Check if the label is already in the adr_labels dictionary
+    if label in adr_labels:
+        print(f"Error: Label '{label}' already defined.")
+        sys.exit(1)
+
+    values = [token.strip() for token in tokens[1].split(",")]
+
+    return label, values
+
 # assemble the data section
 def assemble_data_section(data_section) -> None:
-    print("Warning: Data section not supported yet")
+    data = []
+    for line_number, line in enumerate(data_section, start=1):
+        label, values = tokenize_data(line)
+
+        # Skip empty lines or comment-only lines
+        if label is None:
+            continue
+
+        try:
+            if len(values) == 1:
+                data.append(values[0])
+                # add to the adr_labels dictionary
+                adr_labels[label] = format(len(data) - 1, "08b")
+            else:
+                data.extend(values)
+        except ValueError as ve:
+            print(f"Error on line {line_number}: {ve} Snippet: {line.strip()}")
+            sys.exit(1)
+
+    # Write the data to a file
+    with open("ram.o", "w") as f:
+        f.write("v3.0 hex words addressed\n")
+        for i, value in enumerate(data):
+            # f.write("{:02x}: ".format(i) + hex(int(value, 2))[2:].zfill(8) + "\n")
+            # value is a string, so we need to convert it to an integer first
+            value = int(value)
+            f.write("{:02x}: ".format(i) + hex(value)[2:].zfill(8) + "\n")
+
     return
 
 # main function
@@ -353,6 +448,14 @@ def main() -> None:
         print("Error: Input file is empty")
         sys.exit(1)
     
+    data_section = extract_data(lines)
+
+    # check if the data section is empty
+    if not data_section:
+        print("Warning: No data section found")
+    else:
+        assemble_data_section(data_section)
+
     text_section = extract_text(lines)
 
     # check if the text section is empty
@@ -361,15 +464,7 @@ def main() -> None:
         sys.exit(1)
     else:
         assemble_text_section(text_section)
-
-    data_section = extract_data(lines)
-
-    # check if the data section is empty
-    if not data_section:
-        print("Warning: No data section found")
-    else:
-        assemble_data_section(data_section)
-    
+        
     return
 
 if __name__ == "__main__":

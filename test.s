@@ -1,10 +1,8 @@
 .text
+adr r0, height
 
- test:
-// skip
-nop
-// add r0, r0
-add r0, r0, r1 // add
-ldr r0, [r1, r2]
-b test
-mov r0, r0
+.data
+age: 15
+height: 180
+weight: 70
+var1: 12
