@@ -28,14 +28,19 @@ python3 as.py <input_file_name>
 
 ## TODO List
 - [ ] Manual
-- [ ] Design the architecture/spec
-    - [ ] Outline memory layouts
-    - [ ] Decide how cache will work
+    - [ ] Introduction
+    - [ ] Architecture
+    - [ ] Instruction Set
+    - [ ] Assembly Language
+    - [ ] Assembler
+    - [ ] Examples
+- [x] Design the architecture/spec
 - [x] Define the instruction set
 - [ ] Implement the architecture in Logisim
     - [x] PC
-    - [ ] RegFile
+    - [x] RegFile
     - [ ] ALU
     - [ ] Control Unit
     - [ ] Memory Unit
+    - [ ] Cache
 - [x] Write an assembler
