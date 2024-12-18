@@ -75,6 +75,42 @@ The following arithmetic and logical operations are supported:
 )
 
 #table(
+  columns:6,
+  table.header(
+    [Syntax],
+    [Opcode],
+    [Rd],
+    [Rn],
+    [Imm],
+    [Unused],
+  ),
+  [ADDI Rd, Rn, Imm],
+  [001011],
+  [5 bits],
+  [5 bits],
+  [16 bits],
+  [0 bits],
+  [SUBI Rd, Rn, Imm],
+  [001100],
+  [5 bits],
+  [5 bits],
+  [16 bits],
+  [0 bits],
+  [MULI Rd, Rn, Imm],
+  [001101],
+  [5 bits],
+  [5 bits],
+  [16 bits],
+  [0 bits],
+  [DIVI Rd, Rn, Imm],
+  [001110],
+  [5 bits],
+  [5 bits],
+  [16 bits],
+  [0 bits],
+)
+
+#table(
   columns: 4,
   table.header(
     [Syntax],

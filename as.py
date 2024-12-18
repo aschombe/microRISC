@@ -26,6 +26,10 @@ instruction_set = {
     "LSR":  {"opcode": "001000", "type": "three_reg", "expected_count": 4},
     "ASR":  {"opcode": "001001", "type": "three_reg", "expected_count": 4},
     "NEG":  {"opcode": "001010", "type": "one_reg",   "expected_count": 2},
+    "ADDI": {"opcode": "001011", "type": "two_reg",   "expected_count": 4},
+    "SUBI": {"opcode": "001100", "type": "two_reg",   "expected_count": 4},
+    "MULI": {"opcode": "001101", "type": "two_reg",   "expected_count": 4},
+    "DIVI": {"opcode": "001110", "type": "two_reg",   "expected_count": 4},
 
     # Memory instructions
     "LDR":  {"opcode": "010000", "type": "three_reg", "expected_count": 4},
