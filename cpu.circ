@@ -204,6 +204,20 @@
       <a name="label" val="Instr"/>
       <a name="width" val="32"/>
     </comp>
+    <comp lib="0" loc="(570,280)" name="Tunnel">
+      <a name="label" val="WriteDataM"/>
+      <a name="width" val="32"/>
+    </comp>
+    <comp lib="0" loc="(570,320)" name="Tunnel">
+      <a name="label" val="MemRead"/>
+    </comp>
+    <comp lib="0" loc="(570,360)" name="Tunnel">
+      <a name="label" val="ReadReg3"/>
+      <a name="width" val="5"/>
+    </comp>
+    <comp lib="0" loc="(570,440)" name="Tunnel">
+      <a name="label" val="MemWrite"/>
+    </comp>
     <comp lib="0" loc="(570,560)" name="Tunnel">
       <a name="label" val="RegData1"/>
       <a name="width" val="32"/>
@@ -220,48 +234,34 @@
       <a name="label" val="ALUout"/>
       <a name="width" val="32"/>
     </comp>
+    <comp lib="0" loc="(660,340)" name="Tunnel">
+      <a name="label" val="ReadReg2"/>
+      <a name="width" val="5"/>
+    </comp>
+    <comp lib="0" loc="(660,380)" name="Tunnel">
+      <a name="label" val="WriteReg"/>
+      <a name="width" val="5"/>
+    </comp>
+    <comp lib="0" loc="(660,420)" name="Tunnel">
+      <a name="label" val="MemToReg"/>
+    </comp>
+    <comp lib="0" loc="(670,300)" name="Tunnel">
+      <a name="label" val="ReadReg1"/>
+      <a name="width" val="5"/>
+    </comp>
     <comp lib="0" loc="(670,580)" name="Tunnel">
       <a name="label" val="RegData2"/>
       <a name="width" val="32"/>
     </comp>
-    <comp lib="0" loc="(810,250)" name="Tunnel">
-      <a name="label" val="WriteReg"/>
-      <a name="width" val="5"/>
-    </comp>
-    <comp lib="0" loc="(810,280)" name="Tunnel">
+    <comp lib="0" loc="(810,290)" name="Tunnel">
       <a name="label" val="RegWrite"/>
-    </comp>
-    <comp lib="0" loc="(810,310)" name="Tunnel">
-      <a name="label" val="ReadReg1"/>
-      <a name="width" val="5"/>
-    </comp>
-    <comp lib="0" loc="(810,340)" name="Tunnel">
-      <a name="label" val="ReadReg2"/>
-      <a name="width" val="5"/>
-    </comp>
-    <comp lib="0" loc="(810,370)" name="Tunnel">
-      <a name="label" val="ReadReg3"/>
-      <a name="width" val="5"/>
-    </comp>
-    <comp lib="0" loc="(810,400)" name="Tunnel">
-      <a name="label" val="WriteDataM"/>
-      <a name="width" val="32"/>
-    </comp>
-    <comp lib="0" loc="(810,430)" name="Tunnel">
-      <a name="label" val="MemWrite"/>
     </comp>
     <comp lib="0" loc="(810,460)" name="Tunnel">
       <a name="label" val="ALUop"/>
       <a name="width" val="4"/>
     </comp>
-    <comp lib="0" loc="(810,490)" name="Tunnel">
-      <a name="label" val="MemRead"/>
-    </comp>
     <comp lib="0" loc="(810,520)" name="Tunnel">
       <a name="label" val="Br"/>
-    </comp>
-    <comp lib="0" loc="(810,550)" name="Tunnel">
-      <a name="label" val="MemToReg"/>
     </comp>
     <comp lib="2" loc="(480,1240)" name="Multiplexer">
       <a name="width" val="32"/>
@@ -308,6 +308,10 @@
     <wire from="(400,1250)" to="(450,1250)"/>
     <wire from="(460,1260)" to="(460,1280)"/>
     <wire from="(480,1240)" to="(520,1240)"/>
+    <wire from="(570,300)" to="(670,300)"/>
+    <wire from="(570,340)" to="(660,340)"/>
+    <wire from="(570,380)" to="(660,380)"/>
+    <wire from="(570,420)" to="(660,420)"/>
     <wire from="(570,580)" to="(670,580)"/>
     <wire from="(570,790)" to="(620,790)"/>
   </circuit>
@@ -2818,6 +2822,8 @@
       <a name="facing" val="west"/>
       <a name="label" val="WriteDataM"/>
       <a name="output" val="true"/>
+      <a name="radix" val="16"/>
+      <a name="width" val="32"/>
     </comp>
     <comp lib="0" loc="(1100,300)" name="Pin">
       <a name="appearance" val="NewPins"/>
@@ -3352,10 +3358,6 @@
       <a name="label" val="WriteDataM"/>
       <a name="width" val="32"/>
     </comp>
-    <comp lib="0" loc="(630,340)" name="Tunnel">
-      <a name="facing" val="east"/>
-      <a name="label" val="MemRead"/>
-    </comp>
     <comp lib="0" loc="(650,470)" name="Tunnel">
       <a name="facing" val="east"/>
       <a name="label" val="MemRead"/>
@@ -3392,7 +3394,6 @@
     <wire from="(520,300)" to="(640,300)"/>
     <wire from="(520,430)" to="(700,430)"/>
     <wire from="(570,510)" to="(700,510)"/>
-    <wire from="(630,340)" to="(640,340)"/>
     <wire from="(650,470)" to="(700,470)"/>
     <wire from="(860,300)" to="(1200,300)"/>
     <wire from="(940,510)" to="(970,510)"/>
@@ -7659,6 +7660,11 @@
       <a name="facing" val="east"/>
       <a name="label" val="CLK"/>
     </comp>
+    <comp lib="0" loc="(1170,350)" name="Tunnel">
+      <a name="facing" val="east"/>
+      <a name="label" val="Index"/>
+      <a name="width" val="8"/>
+    </comp>
     <comp lib="0" loc="(120,40)" name="Tunnel">
       <a name="label" val="CLK"/>
     </comp>
@@ -7725,10 +7731,6 @@
       <a name="bit9" val="1"/>
       <a name="facing" val="south"/>
       <a name="incoming" val="24"/>
-    </comp>
-    <comp lib="0" loc="(180,230)" name="Pin">
-      <a name="appearance" val="NewPins"/>
-      <a name="label" val="WriteEnable"/>
     </comp>
     <comp lib="0" loc="(210,140)" name="Tunnel">
       <a name="facing" val="north"/>
@@ -7842,6 +7844,7 @@
     <wire from="(1110,390)" to="(1180,390)"/>
     <wire from="(1110,430)" to="(1180,430)"/>
     <wire from="(1160,410)" to="(1180,410)"/>
+    <wire from="(1170,350)" to="(1180,350)"/>
     <wire from="(140,360)" to="(160,360)"/>
     <wire from="(1420,430)" to="(1440,430)"/>
     <wire from="(1450,240)" to="(1460,240)"/>
