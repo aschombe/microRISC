@@ -38,7 +38,4 @@ python3 as.py <input_file_name>
     - [ ] ALU
     - [ ] Control Unit
     - [ ] Memory Unit
-- [ ] Write an assembler
-    - [ ] Fix tokenizer:
-        - [ ] Allows programmer to place commas anywhere and it just accepts it
-    - [ ] Decide how to handle data section
+- [x] Write an assembler

@@ -123,28 +123,6 @@ def extract_text(lines) -> list:
 
 # tokenize the line
 def tokenize_instruction(line) -> tuple:
-    # instruction name and operands should be case insensitive
-    # Strict tokenization, each instruction, after spaces are stripped, must follow a format depending on the instruction
-    # Spacing between operands is not enforced (e.g ADD R0,R1,R2 is valid)
-    # Labels MUST be on their own line (can't have an instruction follow)
-    # Instruction types:
-    # 1. Three register instructions: ADD, SUB, MUL, DIV, AND, ORR, XOR, LSL, LSR, ASR
-    # Format: <INSTRUCTION> <Rd>, <Rn>, <Rm>
-    # 2. One register instructions: NEG
-    # Format: <INSTRUCTION> <Rd>
-    # 3. Three Register bracketed instructions: LDR, STR
-    # Format <INSTRUCTION> <Rd>, [<Rn>, <Rm>]
-    # 4. Register label instructions: ADR, CBZ, CBNZ
-    # Format: <INSTRUCTION> <Rd>, <label>
-    # 5. Label instructions: B, BEQ, BNE, BGT, BLT, BGE, BLE
-    # Format: <INSTRUCTION> <label>
-    # 6. Two register instructions: CMP
-    # Format: <INSTRUCTION> <Rn>, <Rm>
-    # 7. No operand instructions: NOP
-    # Format: <INSTRUCTION>
-    # 8. MOV instruction: MOV
-    # Format: MOV <Rd>, <Rn> or MOV <Rd>, <imm>
-    
     if line.startswith("//"):
         return None, [], None
 
@@ -154,82 +132,51 @@ def tokenize_instruction(line) -> tuple:
     # Remove leading and trailing whitespaces
     line = line.strip()
 
-    # Split the line on spaces, then on commas
-    tokens = re.split(r"\s|,", line)
-
-    # Remove empty tokens
-    tokens = [token for token in tokens if token]
-
-    # Remove leading and trailing whitespaces from each token
-    tokens = [token.strip() for token in tokens]
+    # Check if the line is empty
+    if not line:
+        return None, [], None
 
     instr = None
     operands = []
     label = None
 
-    # Check if the line is empty
-    if not line:
-        return instr, operands, label
-
-    # Use regex to check if its a label, and make sure theres no instruction on the same line (throw an error)
+    # Use regex to check if it's a label, ensuring no instruction follows (throw an error if it does)
     if re.match(r"^[a-zA-Z_][a-zA-Z0-9_]*:$", line):
-        if len(tokens) > 1:
-            print(f"Error: Label '{line}' must be on its own line.")
-            sys.exit(1)
         label = line[:-1]
         return instr, operands, label
 
-    # based on what the instruction is, tokenize it accordingly
-    instr = tokens[0].strip().upper()
+    # Validate formats using regex
+    three_reg_pattern = r"^(ADD|SUB|MUL|DIV|AND|ORR|XOR|LSL|LSR|ASR) R\d{1,2}, R\d{1,2}, R\d{1,2}$"
+    one_reg_pattern = r"^(NEG) R\d{1,2}$"
+    three_reg_mem_pattern = r"^(LDR|STR) R\d{1,2}, \[R\d{1,2}, R\d{1,2}\]$"
+    reg_label_pattern = r"^(ADR|CBZ|CBNZ) R\d{1,2}, [a-zA-Z_][a-zA-Z0-9_]*$"
+    label_pattern = r"^(B|BEQ|BNE|BGT|BLT|BGE|BLE) [a-zA-Z_][a-zA-Z0-9_]*$"
+    cmp_pattern = r"^(CMP) R\d{1,2}, R\d{1,2}$"
+    nop_pattern = r"^(NOP)$"
+    mov_pattern = r"^(MOV) R\d{1,2}, (R\d{1,2}|\d+)$"
 
-    if instr in ["ADD", "SUB", "MUL", "DIV", "AND", "ORR", "XOR", "LSL", "LSR", "ASR"]:
-        # check if the instruction is of the form <INSTRUCTION> <Rd>, <Rn>, <Rm>
-        if len(tokens) != 4:
-            print(f"Error: Expected 3 operands in '{line}'.")
-            sys.exit(1)
-        operands = [tokens[1].strip(), tokens[2].strip(), tokens[3].strip()]
-    elif instr == "NEG":
-        if len(tokens) != 2:
-            print(f"Error: Expected 1 operand in '{line}'.")
-            sys.exit(1)
-        operands = [tokens[1].strip()]
-    elif instr in ["LDR", "STR"]:
-        if len(tokens) != 4:
-            print(f"Error: Expected 3 operands in '{line}'.")
-            sys.exit(1)
-        if tokens[2][0] != "[" or tokens[3][-1] != "]":
-            print(f"Error: Expected '[' and ']' around memory operands in '{line}'.")
-            sys.exit(1)
-        operands = [tokens[1].strip(), tokens[2].strip()[1:], tokens[3].strip()[:-1]]
-    elif instr in ["ADR", "CBZ", "CBNZ"]:
-        if len(tokens) != 3:
-            print(f"Error: Expected 2 operands in '{line}'.")
-            sys.exit(1)
-        operands = [tokens[1].strip(), tokens[2].strip()]
-    elif instr in ["B", "BEQ", "BNE", "BGT", "BLT", "BGE", "BLE"]:
-        if len(tokens) != 2:
-            print(f"Error: Expected 1 operand in '{line}'.")
-            sys.exit(1)
-        operands = [tokens[1].strip()]
-    elif instr == "CMP":
-        if len(tokens) != 3:
-            print(f"Error: Expected 2 operands in '{line}'.")
-            sys.exit(1)
-        operands = [tokens[1].strip(), tokens[2].strip()]
-    elif instr == "NOP":
-        if len(tokens) != 1:
-            print(f"Error: Expected no operands in '{line}'.")
-            sys
-    elif instr == "MOV":
-        if len(tokens) != 3:
-            print(f"Error: Expected 2 operands in '{line}'.")
-            sys.exit(1)
-        operands = [tokens[1].strip(), tokens[2].strip()]
-    else:
-        print(f"Error: Unknown instruction '{instr}'.")
-        sys.exit(1)
+    patterns = {
+        "three_reg": three_reg_pattern,
+        "one_reg": one_reg_pattern,
+        "three_reg_mem": three_reg_mem_pattern,
+        "reg_label": reg_label_pattern,
+        "label": label_pattern,
+        "cmp": cmp_pattern,
+        "nop": nop_pattern,
+        "mov": mov_pattern,
+    }
 
-    return instr, operands, label
+    for instr_type, pattern in patterns.items():
+        if re.match(pattern, line, re.IGNORECASE):
+            tokens = re.split(r"\s|,", line)
+            tokens = [token.strip() for token in tokens if token]
+            instr = tokens[0].upper()
+            operands = tokens[1:]
+            return instr, operands, label
+
+    # If no pattern matches, raise an error
+    print(f"Error: Invalid instruction format in line: '{line}'")
+    sys.exit(1)
 
 def assemble_text_section(text_section) -> None:
     machine_code = []
