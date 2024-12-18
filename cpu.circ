@@ -274,7 +274,7 @@
       <a name="font" val="SansSerif bold 28"/>
       <a name="text" val="Stage 2: ID"/>
     </comp>
-    <comp lib="8" loc="(457,984)" name="Text">
+    <comp lib="8" loc="(455,980)" name="Text">
       <a name="font" val="SansSerif bold 28"/>
       <a name="text" val="Stage 4: ME"/>
     </comp>
@@ -282,7 +282,7 @@
       <a name="font" val="SansSerif bold 28"/>
       <a name="text" val="Stage 1: IF"/>
     </comp>
-    <comp lib="8" loc="(460,1196)" name="Text">
+    <comp lib="8" loc="(460,1195)" name="Text">
       <a name="font" val="SansSerif bold 28"/>
       <a name="text" val="Stage 5: WB"/>
     </comp>
@@ -2708,49 +2708,49 @@
       <a name="shift" val="ar"/>
       <a name="width" val="32"/>
     </comp>
-    <comp lib="8" loc="(1025,383)" name="Text">
+    <comp lib="8" loc="(1025,380)" name="Text">
       <a name="font" val="SansSerif bold 28"/>
       <a name="text" val="0011 - DIV"/>
     </comp>
-    <comp lib="8" loc="(1028,468)" name="Text">
+    <comp lib="8" loc="(1025,465)" name="Text">
       <a name="font" val="SansSerif bold 28"/>
       <a name="text" val="0111 - LSL"/>
     </comp>
-    <comp lib="8" loc="(1029,491)" name="Text">
+    <comp lib="8" loc="(1025,490)" name="Text">
       <a name="font" val="SansSerif bold 28"/>
       <a name="text" val="1000 - LSR"/>
     </comp>
-    <comp lib="8" loc="(1030,513)" name="Text">
-      <a name="font" val="SansSerif bold 28"/>
-      <a name="text" val="1001 - ASR"/>
-    </comp>
-    <comp lib="8" loc="(1031,341)" name="Text">
-      <a name="font" val="SansSerif bold 28"/>
-      <a name="text" val="0001 - SUB"/>
-    </comp>
-    <comp lib="8" loc="(1031,536)" name="Text">
-      <a name="font" val="SansSerif bold 28"/>
-      <a name="text" val="1010 - NEG"/>
-    </comp>
-    <comp lib="8" loc="(1032,320)" name="Text">
+    <comp lib="8" loc="(1030,320)" name="Text">
       <a name="font" val="SansSerif bold 28"/>
       <a name="text" val="0000 - ADD"/>
     </comp>
-    <comp lib="8" loc="(1032,362)" name="Text">
+    <comp lib="8" loc="(1030,340)" name="Text">
+      <a name="font" val="SansSerif bold 28"/>
+      <a name="text" val="0001 - SUB"/>
+    </comp>
+    <comp lib="8" loc="(1030,360)" name="Text">
       <a name="font" val="SansSerif bold 28"/>
       <a name="text" val="0010 - MUL"/>
     </comp>
-    <comp lib="8" loc="(1032,404)" name="Text">
+    <comp lib="8" loc="(1030,400)" name="Text">
       <a name="font" val="SansSerif bold 28"/>
       <a name="text" val="0100 - AND"/>
     </comp>
-    <comp lib="8" loc="(1032,447)" name="Text">
+    <comp lib="8" loc="(1030,425)" name="Text">
+      <a name="font" val="SansSerif bold 28"/>
+      <a name="text" val="0101 - ORR"/>
+    </comp>
+    <comp lib="8" loc="(1030,445)" name="Text">
       <a name="font" val="SansSerif bold 28"/>
       <a name="text" val="0110 - XOR"/>
     </comp>
-    <comp lib="8" loc="(1033,425)" name="Text">
+    <comp lib="8" loc="(1030,510)" name="Text">
       <a name="font" val="SansSerif bold 28"/>
-      <a name="text" val="0101 - ORR"/>
+      <a name="text" val="1001 - ASR"/>
+    </comp>
+    <comp lib="8" loc="(1030,535)" name="Text">
+      <a name="font" val="SansSerif bold 28"/>
+      <a name="text" val="1010 - NEG"/>
     </comp>
     <comp loc="(660,520)" name="ANDer"/>
     <comp loc="(660,590)" name="ORer"/>
@@ -3058,27 +3058,27 @@
       <a name="font" val="SansSerif bold 28"/>
       <a name="text" val="LDR or STR?"/>
     </comp>
-    <comp lib="8" loc="(413,1348)" name="Text">
+    <comp lib="8" loc="(410,1345)" name="Text">
       <a name="font" val="SansSerif bold 28"/>
       <a name="text" val="0011 - DIV"/>
     </comp>
-    <comp lib="8" loc="(416,1433)" name="Text">
-      <a name="font" val="SansSerif bold 28"/>
-      <a name="text" val="0111 - LSL"/>
-    </comp>
-    <comp lib="8" loc="(417,1456)" name="Text">
-      <a name="font" val="SansSerif bold 28"/>
-      <a name="text" val="1000 - LSR"/>
-    </comp>
-    <comp lib="8" loc="(418,1478)" name="Text">
-      <a name="font" val="SansSerif bold 28"/>
-      <a name="text" val="1001 - ASR"/>
-    </comp>
-    <comp lib="8" loc="(419,1306)" name="Text">
+    <comp lib="8" loc="(415,1305)" name="Text">
       <a name="font" val="SansSerif bold 28"/>
       <a name="text" val="0001 - SUB"/>
     </comp>
-    <comp lib="8" loc="(419,1501)" name="Text">
+    <comp lib="8" loc="(415,1430)" name="Text">
+      <a name="font" val="SansSerif bold 28"/>
+      <a name="text" val="0111 - LSL"/>
+    </comp>
+    <comp lib="8" loc="(415,1455)" name="Text">
+      <a name="font" val="SansSerif bold 28"/>
+      <a name="text" val="1000 - LSR"/>
+    </comp>
+    <comp lib="8" loc="(415,1475)" name="Text">
+      <a name="font" val="SansSerif bold 28"/>
+      <a name="text" val="1001 - ASR"/>
+    </comp>
+    <comp lib="8" loc="(415,1500)" name="Text">
       <a name="font" val="SansSerif bold 28"/>
       <a name="text" val="1010 - NEG"/>
     </comp>
@@ -3086,21 +3086,21 @@
       <a name="font" val="SansSerif bold 28"/>
       <a name="text" val="0000 - ADD"/>
     </comp>
-    <comp lib="8" loc="(420,1327)" name="Text">
+    <comp lib="8" loc="(420,1325)" name="Text">
       <a name="font" val="SansSerif bold 28"/>
       <a name="text" val="0010 - MUL"/>
     </comp>
-    <comp lib="8" loc="(420,1369)" name="Text">
+    <comp lib="8" loc="(420,1365)" name="Text">
       <a name="font" val="SansSerif bold 28"/>
       <a name="text" val="0100 - AND"/>
     </comp>
-    <comp lib="8" loc="(420,1412)" name="Text">
-      <a name="font" val="SansSerif bold 28"/>
-      <a name="text" val="0110 - XOR"/>
-    </comp>
-    <comp lib="8" loc="(421,1390)" name="Text">
+    <comp lib="8" loc="(420,1390)" name="Text">
       <a name="font" val="SansSerif bold 28"/>
       <a name="text" val="0101 - ORR"/>
+    </comp>
+    <comp lib="8" loc="(420,1410)" name="Text">
+      <a name="font" val="SansSerif bold 28"/>
+      <a name="text" val="0110 - XOR"/>
     </comp>
     <comp lib="8" loc="(500,430)" name="Text">
       <a name="font" val="SansSerif bold 18"/>
@@ -3287,11 +3287,6 @@
     <a name="circuit" val="MEM"/>
     <a name="circuitnamedboxfixedsize" val="true"/>
     <a name="simulationFrequency" val="1.0"/>
-    <comp lib="0" loc="(1220,410)" name="Tunnel">
-      <a name="facing" val="east"/>
-      <a name="label" val="ReadDataM"/>
-      <a name="width" val="32"/>
-    </comp>
     <comp lib="0" loc="(1240,410)" name="Pin">
       <a name="appearance" val="NewPins"/>
       <a name="facing" val="west"/>
@@ -3338,24 +3333,24 @@
       <a name="label" val="ALUout"/>
       <a name="width" val="32"/>
     </comp>
-    <comp lib="0" loc="(460,350)" name="Tunnel">
-      <a name="facing" val="east"/>
-      <a name="label" val="ReadDataM"/>
-      <a name="width" val="32"/>
-    </comp>
-    <comp lib="0" loc="(550,430)" name="Tunnel">
+    <comp lib="0" loc="(430,300)" name="Tunnel">
       <a name="facing" val="east"/>
       <a name="label" val="ALUout"/>
+      <a name="width" val="32"/>
+    </comp>
+    <comp lib="0" loc="(480,300)" name="Bit Extender">
+      <a name="in_width" val="32"/>
+      <a name="out_width" val="24"/>
+    </comp>
+    <comp lib="0" loc="(480,350)" name="Tunnel">
+      <a name="facing" val="east"/>
+      <a name="label" val="ReadDataM"/>
       <a name="width" val="32"/>
     </comp>
     <comp lib="0" loc="(570,510)" name="Tunnel">
       <a name="facing" val="east"/>
       <a name="label" val="WriteDataM"/>
       <a name="width" val="32"/>
-    </comp>
-    <comp lib="0" loc="(600,430)" name="Bit Extender">
-      <a name="in_width" val="32"/>
-      <a name="out_width" val="24"/>
     </comp>
     <comp lib="0" loc="(630,340)" name="Tunnel">
       <a name="facing" val="east"/>
@@ -3381,16 +3376,25 @@
       <a name="label" val="DRAM"/>
     </comp>
     <comp loc="(860,300)" name="cache"/>
+    <wire from="(1200,300)" to="(1200,410)"/>
+    <wire from="(1200,410)" to="(1240,410)"/>
     <wire from="(190,60)" to="(200,60)"/>
     <wire from="(210,110)" to="(220,110)"/>
     <wire from="(210,140)" to="(220,140)"/>
     <wire from="(210,170)" to="(220,170)"/>
     <wire from="(210,210)" to="(230,210)"/>
-    <wire from="(550,430)" to="(560,430)"/>
+    <wire from="(430,300)" to="(440,300)"/>
+    <wire from="(480,300)" to="(520,300)"/>
+    <wire from="(480,350)" to="(500,350)"/>
+    <wire from="(500,320)" to="(500,350)"/>
+    <wire from="(500,320)" to="(640,320)"/>
+    <wire from="(520,300)" to="(520,430)"/>
+    <wire from="(520,300)" to="(640,300)"/>
+    <wire from="(520,430)" to="(700,430)"/>
     <wire from="(570,510)" to="(700,510)"/>
-    <wire from="(600,430)" to="(610,430)"/>
     <wire from="(630,340)" to="(640,340)"/>
     <wire from="(650,470)" to="(700,470)"/>
+    <wire from="(860,300)" to="(1200,300)"/>
     <wire from="(940,510)" to="(970,510)"/>
   </circuit>
   <circuit name="ANDer">
