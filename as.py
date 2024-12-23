@@ -26,6 +26,7 @@ instruction_set = {
     "LSR":  {"opcode": "001000", "type": "three_reg", "expected_count": 4},
     "ASR":  {"opcode": "001001", "type": "three_reg", "expected_count": 4},
     "NEG":  {"opcode": "001010", "type": "one_reg",   "expected_count": 2},
+
     "ADDI": {"opcode": "001011", "type": "two_reg",   "expected_count": 4},
     "SUBI": {"opcode": "001100", "type": "two_reg",   "expected_count": 4},
     "MULI": {"opcode": "001101", "type": "two_reg",   "expected_count": 4},
@@ -49,8 +50,8 @@ instruction_set = {
     # Special instructions
     "NOP":  {"opcode": "110000", "type": "no_op",     "expected_count": 1},
     "RET":  {"opcode": "110001", "type": "no_op",     "expected_count": 1},
-    # MOV is a special case where it can take either two registers or a register and an immediate value
-    # So the only thing being used from its instruction set entry is the opcode
+    # mov is a special case where it can take either two registers or a register and an immediate value
+    # so the only thing being used from its instruction set entry is the opcode
     "MOV":  {"opcode": "110010", "type": "dynamic",   "expected_count": 0},
     "CMP":  {"opcode": "110011", "type": "two_reg",   "expected_count": 3},
     "CBZ":  {"opcode": "110100", "type": "reg_label", "expected_count": 3},
@@ -130,13 +131,8 @@ def tokenize_instruction(line) -> tuple:
     if line.startswith("//"):
         return None, [], None
 
-    # Remove comments (start of line or after an instruction, //)
     line = re.sub(r"//.*", "", line)
-
-    # Remove leading and trailing whitespaces
     line = line.strip()
-
-    # Check if the line is empty
     if not line:
         return None, [], None
 
@@ -144,12 +140,11 @@ def tokenize_instruction(line) -> tuple:
     operands = []
     label = None
 
-    # Use regex to check if it's a label, ensuring no instruction follows (throw an error if it does)
     if re.match(r"^[a-zA-Z_][a-zA-Z0-9_]*:$", line):
         label = line[:-1]
         return instr, operands, label
 
-    # Validate formats using regex
+    two_reg_imm_pattern = r"^(ADDI|SUBI|MULI|DIVI) R\d{1,2}, R\d{1,2}, \d+$"
     three_reg_pattern = r"^(ADD|SUB|MUL|DIV|AND|ORR|XOR|LSL|LSR|ASR) R\d{1,2}, R\d{1,2}, R\d{1,2}$"
     one_reg_pattern = r"^(NEG) R\d{1,2}$"
     three_reg_mem_pattern = r"^(LDR|STR) R\d{1,2}, \[R\d{1,2}, R\d{1,2}\]$"
@@ -168,27 +163,37 @@ def tokenize_instruction(line) -> tuple:
         "cmp": cmp_pattern,
         "nop": nop_pattern,
         "mov": mov_pattern,
+        "two_reg_imm": two_reg_imm_pattern,
     }
 
     for instr_type, pattern in patterns.items():
         if re.match(pattern, line, re.IGNORECASE):
-            tokens = re.split(r"\s|,", line)
+            tokens = re.split(r"\s|,|\s*,\s*", line)
             tokens = [token.strip() for token in tokens if token]
+
+            # strip brackets from memory instructions
+            if instr_type == "three_reg_mem":
+                tokens[2] = tokens[2][1:]
+                tokens[3] = tokens[3][:-1]
+
             instr = tokens[0].upper()
             operands = tokens[1:]
             return instr, operands, label
 
-    # If no pattern matches, raise an error
     print(f"Error: Invalid instruction format in line: '{line}'")
     sys.exit(1)
 
+# assemble the text section
 def assemble_text_section(text_section) -> None:
     machine_code = []
+    prev_write = None  # register written by the last instruction
+    prev_prev_write = None  # register written two instructions ago
+
     for line_number, line in enumerate(text_section, start=1):
-        # Tokenize strictly: enforce operand separation and strip extra spaces
+        # tokenize strictly: enforce operand separation and strip extra spaces
         instr, operands, label = tokenize_instruction(line)
 
-        # If there's a label, store it and skip processing for now
+        # if there's a label, store it and skip processing for now
         if label is not None:
             if label in labels:
                 print(f"Error on line {line_number}: Label '{label}' already defined.")
@@ -196,7 +201,7 @@ def assemble_text_section(text_section) -> None:
             labels[label] = format(len(machine_code), "08b")
             continue
 
-        # Skip empty lines or comment-only lines
+        # skip empty lines or comment-only lines
         if instr is None:
             continue
 
@@ -206,53 +211,86 @@ def assemble_text_section(text_section) -> None:
             print(f"Error on line {line_number}: Invalid instruction '{instr}'. Snippet: {line.strip()}")
             sys.exit(1)
 
+        curr_access = []
+        encoded_instruction = ""
+
         try:
+            # identify accessed registers based on instruction type
             if instruction_set[instr]["type"] == "three_reg":
-                if len(operands) != (instruction_set[instr]["expected_count"] - 1):
-                    raise ValueError(f"Expected {instruction_set[instr]['expected_count'] - 1} operands, found {len(operands) - 1}.")
+                if len(operands) != 3:
+                    raise ValueError(f"Expected 3 operands, found {len(operands)}.")
                 rd = resolve_register(operands[0])
                 rn = resolve_register(operands[1])
                 rm = resolve_register(operands[2])
-                machine_code.append(opcode + rd + rn + rm)
-            elif instruction_set[instr]["type"] == "label":
-                if len(operands) != (instruction_set[instr]["expected_count"] - 1):
-                    raise ValueError(f"Expected {instruction_set[instr]['expected_count']} - 1 operands, found {len(operands) - 1}.")
-                label = operands[0].upper()
-                machine_code.append(opcode + label)
-            elif instruction_set[instr]["type"] == "two_reg":
-                if len(operands) != (instruction_set[instr]["expected_count"] - 1):
-                    raise ValueError(f"Expected {instruction_set[instr]['expected_count'] - 1} operands, found {len(operands) - 1}.")
+                curr_access = [rn, rm]
+                encoded_instruction = opcode + rd + rn + rm
+            elif instruction_set[instr]["type"] == "two_reg" and instr.endswith("I"):  # immediate variant
+                if len(operands) != 3:
+                    raise ValueError(f"Expected 3 operands, found {len(operands)}.")
                 rd = resolve_register(operands[0])
                 rn = resolve_register(operands[1])
-                machine_code.append(opcode + rd + rn)
+                imm = resolve_immediate(operands[2])
+                curr_access = [rn]  # only the source register is accessed
+                encoded_instruction = opcode + rd + rn + imm
+            elif instruction_set[instr]["type"] == "two_reg":
+                if len(operands) != 2:
+                    raise ValueError(f"Expected 2 operands, found {len(operands)}.")
+                rd = resolve_register(operands[0])
+                rn = resolve_register(operands[1])
+                curr_access = [rn]
+                encoded_instruction = opcode + rd + rn
             elif instr == "MOV":
                 if len(operands) != 2:
-                    raise ValueError(f"Expected 3 operands, found {len(operands) - 1}.")
+                    raise ValueError(f"Expected 2 operands, found {len(operands)}.")
+                rd = resolve_register(operands[0])
                 if operands[1].upper() in registers:
-                    rd = resolve_register(operands[0])
                     rn = resolve_register(operands[1])
-                    machine_code.append(opcode + rd + rn + "0000000000")
+                    curr_access = [rn]
+                    encoded_instruction = opcode + rd + rn + "0000000000"
                 elif operands[1].isdigit():
-                    rd = resolve_register(operands[0])
                     imm = resolve_immediate(operands[1])
-                    machine_code.append(opcode + rd + imm)
+                    encoded_instruction = opcode + rd + imm
                 else:
                     raise ValueError(f"Invalid second operand '{operands[1]}'.")
             elif instruction_set[instr]["type"] == "one_reg":
-                if len(operands) != (instruction_set[instr]["expected_count"] - 1):
-                    raise ValueError(f"Expected {instruction_set[instr]['expected_count'] - 1} operands, found {len(operands) - 1}.")
+                if len(operands) != 1:
+                    raise ValueError(f"Expected 1 operand, found {len(operands)}.")
                 rd = resolve_register(operands[0])
-                machine_code.append(opcode + rd)
+                encoded_instruction = opcode + rd
             elif instruction_set[instr]["type"] == "reg_label":
-                if len(operands) != (instruction_set[instr]["expected_count"] - 1):
-                    raise ValueError(f"Expected {instruction_set[instr]['expected_count']} - 1 operands, found {len(operands) - 1}.")
+                if len(operands) != 2:
+                    raise ValueError(f"Expected 2 operands, found {len(operands)}.")
                 rd = resolve_register(operands[0])
                 label = operands[1].upper()
-                machine_code.append(opcode + rd + label)
+                curr_access = [rd]
+                encoded_instruction = opcode + rd + label
             elif instruction_set[instr]["type"] == "no_op":
-                machine_code.append(opcode + "00000000000000000000000000")
+                encoded_instruction = opcode + "00000000000000000000000000"
             else:
                 raise ValueError("Unknown instruction type.")
+
+            # insert NOPs before dependent instructions
+            hazard_detected = False
+            for reg in curr_access:
+                if reg == prev_write or reg == prev_prev_write:
+                    machine_code.append(resolve_opcode("NOP") + "00000000000000000000000000")
+                    hazard_detected = True
+
+            if hazard_detected:
+                # re-check previous writes to cover multiple hazards
+                prev_prev_write = prev_write
+                prev_write = None  # Reset current write to avoid consecutive hazards
+
+            # add the current instruction
+            machine_code.append(encoded_instruction)
+
+            # update dependency tracking
+            prev_prev_write = prev_write
+            if instruction_set[instr]["type"] in ["three_reg", "two_reg"]:
+                prev_write = rd
+            else:
+                prev_write = None
+
         except ValueError as ve:
             print(f"Error on line {line_number}: {ve} Snippet: {line.strip()}")
             sys.exit(1)
@@ -260,19 +298,19 @@ def assemble_text_section(text_section) -> None:
             print(f"Error on line {line_number}: Unknown operand '{ke.args[0]}'. Snippet: {line.strip()}")
             sys.exit(1)
 
-    # Resolve labels to their addresses inplace
+    # resolve labels to their addresses inplace
     for i, code in enumerate(machine_code):
         for label in labels:
             if label.upper() in code:
                 machine_code[i] = code.replace(label.upper(), resolve_label(label))
 
-    # Resolve ADR labels to their addresses
+    # resolve adr labels to their addresses
     for i, code in enumerate(machine_code):
         for label in adr_labels:
             if label.upper() in code:
                 machine_code[i] = code.replace(label.upper(), resolve_adr_label(label))
 
-    # Write the machine code to a file
+    # write the machine code to a file
     with open("instructions.o", "w") as f:
         f.write("v3.0 hex words addressed\n")
         for i, code in enumerate(machine_code):
@@ -296,29 +334,29 @@ def tokenize_data(line) -> tuple:
     if line.startswith("//"):
         return None, [], None
 
-    # Remove comments (start of line or after an instruction, //)
+    # remove comments (start of line or after an instruction, //)
     line = re.sub(r"//.*", "", line)
 
-    # Remove leading and trailing whitespaces
+    # remove leading and trailing whitespaces
     line = line.strip()
 
-    # Split the line on spaces, then on commas
+    # split the line on spaces, then on commas
     tokens = re.split(r"\s|:", line)
 
-    # Remove empty tokens
+    # remove empty tokens
     tokens = [token for token in tokens if token]
 
-    # Remove leading and trailing whitespaces from each token
+    # remove leading and trailing whitespaces from each token
     tokens = [token.strip() for token in tokens]
 
     label = None
     values = []
 
-    # Check if the line is empty
+    # check if the line is empty
     if not line:
         return label, values
 
-    # Use regex to check if its a label, and make sure theres no instruction on the same line (throw an error)
+    # use regex to check if its a label, and make sure theres no instruction on the same line (throw an error)
     if re.match(r"^[a-zA-Z_][a-zA-Z0-9_]*:$", line):
         if len(tokens) > 1:
             print(f"Error: Label '{line}' must be on its own line.")
@@ -329,12 +367,12 @@ def tokenize_data(line) -> tuple:
     # based on what the instruction is, tokenize it accordingly
     label = tokens[0].strip()
 
-    # Check if the label is already in the labels dictionary
+    # check if the label is already in the labels dictionary
     if label in labels:
         print(f"Error: Label '{label}' already defined.")
         sys.exit(1)
 
-    # Check if the label is already in the adr_labels dictionary
+    # check if the label is already in the adr_labels dictionary
     if label in adr_labels:
         print(f"Error: Label '{label}' already defined.")
         sys.exit(1)
@@ -349,7 +387,7 @@ def assemble_data_section(data_section) -> None:
     for line_number, line in enumerate(data_section, start=1):
         label, values = tokenize_data(line)
 
-        # Skip empty lines or comment-only lines
+        # skip empty lines or comment-only lines
         if label is None:
             continue
 
@@ -364,12 +402,10 @@ def assemble_data_section(data_section) -> None:
             print(f"Error on line {line_number}: {ve} Snippet: {line.strip()}")
             sys.exit(1)
 
-    # Write the data to a file
+    # write the data to a file
     with open("ram.o", "w") as f:
         f.write("v3.0 hex words addressed\n")
         for i, value in enumerate(data):
-            # f.write("{:02x}: ".format(i) + hex(int(value, 2))[2:].zfill(8) + "\n")
-            # value is a string, so we need to convert it to an integer first
             value = int(value)
             f.write("{:02x}: ".format(i) + hex(value)[2:].zfill(8) + "\n")
 
