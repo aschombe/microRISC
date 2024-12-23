@@ -50,12 +50,11 @@ instruction_set = {
     # Special instructions
     "NOP":  {"opcode": "110000", "type": "no_op",     "expected_count": 1},
     "RET":  {"opcode": "110001", "type": "no_op",     "expected_count": 1},
-    # mov is a special case where it can take either two registers or a register and an immediate value
-    # so the only thing being used from its instruction set entry is the opcode
     "MOV":  {"opcode": "110010", "type": "dynamic",   "expected_count": 0},
-    "CMP":  {"opcode": "110011", "type": "two_reg",   "expected_count": 3},
-    "CBZ":  {"opcode": "110100", "type": "reg_label", "expected_count": 3},
-    "CBNZ": {"opcode": "110101", "type": "reg_label", "expected_count": 3},
+    "MOVI": {"opcode": "110011", "type": "dynamic",   "expected_count": 0},
+    "CMP":  {"opcode": "110100", "type": "two_reg",   "expected_count": 3},
+    "CBZ":  {"opcode": "110101", "type": "reg_label", "expected_count": 3},
+    "CBNZ": {"opcode": "110110", "type": "reg_label", "expected_count": 3},
 }
 
 # this will be "label": "address" pairs where address is the next instruction's (relative to the label) address
@@ -152,7 +151,10 @@ def tokenize_instruction(line) -> tuple:
     label_pattern = r"^(B|BEQ|BNE|BGT|BLT|BGE|BLE) [a-zA-Z_][a-zA-Z0-9_]*$"
     cmp_pattern = r"^(CMP) R\d{1,2}, R\d{1,2}$"
     nop_pattern = r"^(NOP)$"
-    mov_pattern = r"^(MOV) R\d{1,2}, (R\d{1,2}|\d+)$"
+    # mov_pattern = r"^(MOV) R\d{1,2}, (R\d{1,2}|\d+)$"
+    # mov and movi
+    mov_pattern = r"^(MOV) R\d{1,2}, R\d{1,2}$"
+    movi_pattern = r"^(MOVI) R\d{1,2}, \d+$"
 
     patterns = {
         "three_reg": three_reg_pattern,
@@ -163,6 +165,7 @@ def tokenize_instruction(line) -> tuple:
         "cmp": cmp_pattern,
         "nop": nop_pattern,
         "mov": mov_pattern,
+        "movi": movi_pattern,
         "two_reg_imm": two_reg_imm_pattern,
     }
 
@@ -247,11 +250,14 @@ def assemble_text_section(text_section) -> None:
                     rn = resolve_register(operands[1])
                     curr_access = [rn]
                     encoded_instruction = opcode + rd + rn + "0000000000"
-                elif operands[1].isdigit():
-                    imm = resolve_immediate(operands[1])
-                    encoded_instruction = opcode + rd + imm
                 else:
                     raise ValueError(f"Invalid second operand '{operands[1]}'.")
+            elif instr == "MOVI":
+                if len(operands) != 2:
+                    raise ValueError(f"Expected 2 operands, found {len(operands)}.")
+                rd = resolve_register(operands[0])
+                imm = resolve_immediate(operands[1])
+                encoded_instruction = opcode + rd + imm
             elif instruction_set[instr]["type"] == "one_reg":
                 if len(operands) != 1:
                     raise ValueError(f"Expected 1 operand, found {len(operands)}.")
