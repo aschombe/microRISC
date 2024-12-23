@@ -12,9 +12,9 @@ These are other instructions that don't fit under the existing categories:
   [NOP],
   [110000],
   [26 bits],
-  // [RET],
-  // [110001],
-  // [26 bits],
+  [RET],
+  [110001],
+  [26 bits],
 )
 
 #table(
@@ -42,11 +42,11 @@ These are other instructions that don't fit under the existing categories:
     [Imm],
     [Unused],
   ),
-  [MOV Rd, Imm],
-  [110010],
+  [MOVI Rd, Imm],
+  [110011],
   [5 bits],
-  [21 bits],
-  [0 bits],
+  [16 bits],
+  [5 bits],
 )
 
 #table(
@@ -59,7 +59,7 @@ These are other instructions that don't fit under the existing categories:
     [Unused],
   ),
   [CMP Rd, Rn],
-  [110011],
+  [110100],
   [5 bits],
   [5 bits],
   [16 bits],
@@ -75,15 +75,15 @@ These are other instructions that don't fit under the existing categories:
     [Unused],
   ),
   [CBZ Rn, Label],
-  [110100],
-  [5 bits],
-  [21 bits],
-  [0 bits],
-  [CBNZ Rn, Label],
   [110101],
   [5 bits],
-  [21 bits],
-  [0 bits],
+  [20 bits],
+  [1 bits],
+  [CBNZ Rn, Label],
+  [110110],
+  [5 bits],
+  [20 bits],
+  [1 bits],
 )
 
 There is also support for single line comments and end of line comments:

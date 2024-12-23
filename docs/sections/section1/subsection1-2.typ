@@ -37,5 +37,3 @@ There are also other control signals implied by the opcode. The first two bits o
   [11],
   [Special],
 )
-
-There are also other control signals that are not part of the opcode. These are:
