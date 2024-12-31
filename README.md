@@ -23,8 +23,12 @@ microRISC is a easy to understand CPU architecture implemented in Logisim.
 ```bash
 python3 assembler/main.py <input_file_name>
 ```
+This will generate two files in the directory of where you ran the command:
+- `instructions.hex` which contains the machine code of the program
+- `ram.hex` which contains the data section of the program (if you declared one)
+
 4. Open Logisim and load the `microRISC.circ` file
-5. Load instructions.o into the Instruction Memory, data.o into the Data Memory
+5. Load instructions.hex into the Instruction Memory, ram.hex into the Data Memory (if you declared a data section)
 6. Run the simulation
 
 ## TODO List

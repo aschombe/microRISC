@@ -1,3 +1,5 @@
+#!/usr/bin/python3
+
 import argparse
 from file_utils import read_file
 from assembly import assemble_data_section, assemble_text_section
@@ -30,3 +32,6 @@ def main():
         return
     else:
         assemble_text_section(text_section, labels, adr_labels)
+
+if __name__ == "__main__":
+    main()

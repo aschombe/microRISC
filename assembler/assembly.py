@@ -148,7 +148,7 @@ def assemble_text_section(text_section, labels, adr_labels) -> None:
                 machine_code[i] = code.replace(label.upper(), resolve_adr_label(label, adr_labels))
 
     # write the machine code to a file
-    with open("instructions.o", "w") as f:
+    with open("instructions.hex", "w") as f:
         f.write("v3.0 hex words addressed\n")
         for i, code in enumerate(machine_code):
             f.write("{:02x}: ".format(i) + hex(int(code, 2))[2:].zfill(8) + "\n")
@@ -176,7 +176,7 @@ def assemble_data_section(data_section, labels, adr_labels) -> None:
             sys.exit(1)
 
     # write the data to a file
-    with open("ram.o", "w") as f:
+    with open("ram.hex", "w") as f:
         f.write("v3.0 hex words addressed\n")
         for i, value in enumerate(data):
             value = int(value)
