@@ -30,6 +30,3 @@ def main():
         return
     else:
         assemble_text_section(text_section, labels, adr_labels)
-
-if __name__ == "__main__":
-    main()
