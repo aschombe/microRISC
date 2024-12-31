@@ -3,6 +3,7 @@ from file_utils import read_file
 from assembly import assemble_data_section, assemble_text_section
 from tokenize import extract_data, extract_text
 
+# global variables to store regular labels and adr labels
 labels = {}
 adr_labels = {}
 

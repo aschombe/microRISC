@@ -1,6 +1,6 @@
 import sys
 
-# Registers and instructions
+# registers and instructions
 registers = {f"R{i}": format(i, "05b") for i in range(32)}
 registers["CMP"] = "11110"
 registers["LR"] = "11111"
@@ -50,6 +50,7 @@ instruction_set = {
     "CBNZ": {"opcode": "110110", "type": "reg_label", "expected_count": 3},
 }
 
+# resolves the register name to its binary representation
 def resolve_register(register) -> str:
     try:
         return registers[register.upper()]
@@ -57,6 +58,7 @@ def resolve_register(register) -> str:
         print("Error: Invalid register: " + register)
         sys.exit(1)
 
+# resolves the opcode to its binary representation
 def resolve_opcode(opcode) -> str:
     try:
         return instruction_set[opcode.upper()]["opcode"]
@@ -64,6 +66,7 @@ def resolve_opcode(opcode) -> str:
         print("Error: Invalid opcode: " + opcode)
         sys.exit(1)
 
+# resolves the immediate value to its binary representation
 def resolve_immediate(imm) -> str:
     try:
         return format(int(imm), "012b")

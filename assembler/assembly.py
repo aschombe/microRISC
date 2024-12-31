@@ -1,6 +1,7 @@
+import sys
+
 from instruction_set import registers, instruction_set, resolve_register, resolve_opcode, resolve_immediate
 from tokenize import tokenize_instruction, tokenize_data
-import sys
 
 def resolve_label(label, labels) -> str:
     try:
@@ -62,7 +63,7 @@ def assemble_text_section(text_section, labels, adr_labels) -> None:
                 rd = resolve_register(operands[0])
                 rn = resolve_register(operands[1])
                 imm = resolve_immediate(operands[2])
-                curr_access = [rn]  # only the source register is accessed
+                curr_access = [rn]
                 encoded_instruction = opcode + rd + rn + imm
             elif instruction_set[instr]["type"] == "two_reg":
                 if len(operands) != 2:
