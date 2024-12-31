@@ -40,16 +40,17 @@ def tokenize_instruction(line) -> tuple:
         label = line[:-1]
         return instr, operands, label
 
-    two_reg_imm_pattern = r"^(ADDI|SUBI|MULI|DIVI) R\d{1,2}, R\d{1,2}, \d+$"
-    three_reg_pattern = r"^(ADD|SUB|MUL|DIV|AND|ORR|XOR|LSL|LSR|ASR) R\d{1,2}, R\d{1,2}, R\d{1,2}$"
-    one_reg_pattern = r"^(NEG) R\d{1,2}$"
-    three_reg_mem_pattern = r"^(LDR|STR) R\d{1,2}, \[R\d{1,2}, R\d{1,2}\]$"
-    reg_label_pattern = r"^(ADR|CBZ|CBNZ) R\d{1,2}, [a-zA-Z_][a-zA-Z0-9_]*$"
+    # rewrite the patterns to support register zr
+    two_reg_imm_pattern = r"^(ADDI|SUBI|MULI|DIVI) (ZR|R\d{1,2}), (ZR|R\d{1,2}), \d+$"
+    three_reg_pattern = r"^(ADD|SUB|MUL|DIV|AND|ORR|XOR|LSL|LSR|ASR) (ZR|R\d{1,2}), (ZR|R\d{1,2}), (ZR|R\d{1,2})$"
+    one_reg_pattern = r"^(NEG) (ZR|R\d{1,2})$"
+    three_reg_mem_pattern = r"^(LDR|STR) (ZR|R\d{1,2}), \[(ZR|R\d{1,2}), (ZR|R\d{1,2})\]$"
+    reg_label_pattern = r"^(ADR|CBZ|CBNZ) (ZR|R\d{1,2}), [a-zA-Z_][a-zA-Z0-9_]*$"
     label_pattern = r"^(B|BEQ|BNE|BGT|BLT|BGE|BLE) [a-zA-Z_][a-zA-Z0-9_]*$"
-    cmp_pattern = r"^(CMP) R\d{1,2}, R\d{1,2}$"
+    cmp_pattern = r"^(CMP) (ZR|R\d{1,2}), (ZR|R\d{1,2})$"
     nop_pattern = r"^(NOP)$"
-    mov_pattern = r"^(MOV) R\d{1,2}, R\d{1,2}$"
-    movi_pattern = r"^(MOVI) R\d{1,2}, \d+$"
+    mov_pattern = r"^(MOV) (ZR|R\d{1,2}), (ZR|R\d{1,2})$"
+    movi_pattern = r"^(MOVI) (ZR|R\d{1,2}), \d+$"
 
     patterns = {
         "three_reg": three_reg_pattern,
@@ -141,6 +142,37 @@ def tokenize(lines, labels, adr_labels):
 
     for line in text_section:
         instr, operands, label = tokenize_instruction(line)
+        # # handle psuedo instructions here:
+        # # if the instruction is a MOV, convert it to an ADDI with ZR
+        # if instr == "MOV":
+        #     instr = "ADD"
+        #     operands.append("ZR")
+
+        # # if the instruction is a MOVI, convert it to an ADDI with an immediate value of the second operand
+        # if instr == "MOVI":
+        #     instr = "ADDI"
+        #     operands.append(operands[1])
+        #     operands[1] = operands[0]
+        #     operands[0] = "ZR"
+
+        # # if the instruction is a CBZ, convert it to a CMP and BEQ with ZR
+        # if instr == "CBZ":
+        #     instr = "CMP"
+        #     operands.append("ZR")
+        #     instructions.append((instr, operands, label))
+        #     instr = "BEQ"
+        #     operands = [operands[0], operands[2]]
+
+        # # if the instruction is a CBNZ, convert it to a CMP and BNE with ZR
+        # if instr == "CBNZ":
+        #     instr = "CMP"
+        #     operands.append("ZR")
+        #     instructions.append((instr, operands, label))
+        #     instr = "BNE"
+        #     operands = [operands[0], operands[2]]
+
+        # print(instr, operands, label)
+
         instructions.append((instr, operands, label))
     
     for line in data_section:

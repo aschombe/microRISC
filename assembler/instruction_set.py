@@ -2,6 +2,7 @@ import sys
 
 # registers and instructions
 registers = {f"R{i}": format(i, "05b") for i in range(32)}
+registers["ZR"] = "00000"
 registers["CMP"] = "11110"
 registers["LR"] = "11111"
 

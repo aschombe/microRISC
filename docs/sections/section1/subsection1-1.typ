@@ -12,7 +12,7 @@ The general purpose registers are used to store data and perform arithmetic oper
     [Register],
     [Binary Representation],
   ),
-  [R0],
+  [R0 (ZR)],
   [00000],
   [R1],
   [00001],
@@ -81,6 +81,20 @@ The general purpose registers are used to store data and perform arithmetic oper
 === Program Counter (PC)
 
 The program counter register keeps track of the current instruction being executed. It is automatically incremented after each instruction is executed. It can not be directly accessed or modified by the programmer.
+
+=== Zero Register (ZR)
+
+The zero register is a special-purpose register that always contains the value zero. It is used to simplify certain arithmetic operations and comparisons. You can reference it using the ZR keyword, or R0.
+
+#table(
+  columns: 2,
+  table.header(
+    [Register],
+    [Binary Representation],
+  ),
+  [ZR],
+  [00000],
+)
 
 === CMP Register
 
