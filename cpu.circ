@@ -3289,6 +3289,11 @@
     <a name="circuit" val="MEM"/>
     <a name="circuitnamedboxfixedsize" val="true"/>
     <a name="simulationFrequency" val="1.0"/>
+    <comp lib="0" loc="(1210,410)" name="Tunnel">
+      <a name="facing" val="east"/>
+      <a name="label" val="ReadDataM"/>
+      <a name="width" val="32"/>
+    </comp>
     <comp lib="0" loc="(1240,410)" name="Pin">
       <a name="appearance" val="NewPins"/>
       <a name="facing" val="west"/>
@@ -3340,14 +3345,14 @@
       <a name="label" val="ALUout"/>
       <a name="width" val="32"/>
     </comp>
-    <comp lib="0" loc="(480,300)" name="Bit Extender">
-      <a name="in_width" val="32"/>
-      <a name="out_width" val="24"/>
-    </comp>
-    <comp lib="0" loc="(480,350)" name="Tunnel">
+    <comp lib="0" loc="(460,350)" name="Tunnel">
       <a name="facing" val="east"/>
       <a name="label" val="ReadDataM"/>
       <a name="width" val="32"/>
+    </comp>
+    <comp lib="0" loc="(480,300)" name="Bit Extender">
+      <a name="in_width" val="32"/>
+      <a name="out_width" val="24"/>
     </comp>
     <comp lib="0" loc="(570,510)" name="Tunnel">
       <a name="facing" val="east"/>
@@ -3373,25 +3378,20 @@
       <a name="enables" val="line"/>
       <a name="label" val="DRAM"/>
     </comp>
-    <comp loc="(860,300)" name="cache"/>
-    <wire from="(1200,300)" to="(1200,410)"/>
-    <wire from="(1200,410)" to="(1240,410)"/>
+    <comp loc="(900,310)" name="cache"/>
+    <wire from="(1210,410)" to="(1240,410)"/>
     <wire from="(190,60)" to="(200,60)"/>
     <wire from="(210,110)" to="(220,110)"/>
     <wire from="(210,140)" to="(220,140)"/>
     <wire from="(210,170)" to="(220,170)"/>
     <wire from="(210,210)" to="(230,210)"/>
     <wire from="(430,300)" to="(440,300)"/>
+    <wire from="(460,350)" to="(480,350)"/>
     <wire from="(480,300)" to="(520,300)"/>
-    <wire from="(480,350)" to="(500,350)"/>
-    <wire from="(500,320)" to="(500,350)"/>
-    <wire from="(500,320)" to="(640,320)"/>
     <wire from="(520,300)" to="(520,430)"/>
-    <wire from="(520,300)" to="(640,300)"/>
     <wire from="(520,430)" to="(700,430)"/>
     <wire from="(570,510)" to="(700,510)"/>
     <wire from="(650,470)" to="(700,470)"/>
-    <wire from="(860,300)" to="(1200,300)"/>
     <wire from="(940,510)" to="(970,510)"/>
   </circuit>
   <circuit name="ANDer">
