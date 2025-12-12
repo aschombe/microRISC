@@ -2,7 +2,7 @@
 
 === General Purpose Registers
 
-The general purpose registers are used to store data and perform arithmetic operations. They are named R0-R29 and are 32 bits wide. R30 is reserved for the stack pointer (SP) and R31 is reserved for the comparison register (CMP).
+The general purpose registers are used to store data and perform arithmetic operations. They are named R0-R29 and are 32 bits wide. R30 is the SP (stack pointer) and R31 is the LR (link register). The binary representation of each register is shown in the table below.
 
 #table(
   columns: 4,
@@ -72,7 +72,7 @@ The general purpose registers are used to store data and perform arithmetic oper
   [11100],
   [R29],
   [11101],
-  [R30 (CMP)],
+  [R30 (SP)],
   [11110],
   [R31 (LR)],
   [11111],
@@ -96,9 +96,9 @@ The zero register is a special-purpose register that always contains the value z
   [00000],
 )
 
-=== CMP Register
+=== Stack Pointer (SP)
 
-The CMP register is used to store the result of a comparison operation. It is set by the CMP instruction, which subtracts the second operand from the first operand and sets the CMP register based on the result. Reference it using the CMP keyword (its an operation and a register), or R30.
+The stack pointer register is used to keep track of the top of the stack in memory. It is automatically updated when data is pushed onto or popped off the stack. You can reference it using the SP keyword, or R30.
 
 #table(
   columns: 2,
@@ -106,8 +106,8 @@ The CMP register is used to store the result of a comparison operation. It is se
     [Register],
     [Binary Representation],
   ),
-  [CMP],
-  [111110],
+  [SP],
+  [11110],
 )
 
 === Link Register (LR)
@@ -123,3 +123,7 @@ The link register is used to store the return address of a function call. When a
   [LR],
   [11111],
 )
+
+=== CMP Result Regiser
+
+The CMP result register is a special-purpose register that stores the result of the most recent comparison operation. It is used to determine the outcome of conditional branch instructions. The CMP result register can hold one of three values: less than, equal to, or greater than. You can NOT directly access or modify this register; it is automatically updated by comparison instructions. It is checked by branch instructions to decide the flow of control in the program.
