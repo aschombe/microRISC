@@ -30,16 +30,26 @@
 
 #pagebreak()
 
-#show outline.entry.where(
-  level: 1
-): it => {
+// Extra spacing before level-1 entries, like you had
+#show outline.entry.where(level: 1): it => {
   v(14pt, weak: true)
   strong(it)
 }
 
+#show outline.entry: it => link(
+  it.element.location(),
+  it.indented(
+    [
+      #it.prefix()
+      → 
+    ],
+    it.inner(),
+  ),
+)
+
 #outline(
-  title: "Table of Contents",
-  indent: n => [→ ] * n,
+  title: [Table of Contents],
+  indent: 1.2em,
 )
 
 #pagebreak()
