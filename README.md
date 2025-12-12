@@ -4,9 +4,8 @@ microRISC is a easy to understand CPU architecture implemented in Logisim.
 ## Features
 - Detailed Manual [here](docs/manual.pdf)
 - 32 32-bit General Purpose Registers
-- CMP Register (results of comparison)
+- SP Register (Stack Pointer)
 - LR Register (Link Register)
-- Cache (planned)
 - 32-bit Instructions
 - Multitude of operations (check manual for specifics):
   - Arithmetic
@@ -46,6 +45,9 @@ This will generate two files in the directory of where you ran the command:
     - [x] RegFile
     - [ ] ALU
     - [ ] Control Unit
-    - [ ] Memory Unit
-        - [ ] Cache
-- [x] Write an assembler
+    - [x] Memory Unit
+    - [ ] Pipeline
+- [ ] Write an assembler
+    - [ ] Label resolution
+    - [ ] Data and control hazard resolution
+    - [ ] Make MOV a psuedo instruction
