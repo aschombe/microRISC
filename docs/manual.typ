@@ -1,3 +1,5 @@
+#import "rivet-config.typ": schema, config, rivet-config
+
 #set page(
   paper: "a4",
   numbering: "<1>",
