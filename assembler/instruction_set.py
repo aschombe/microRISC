@@ -1,76 +1,85 @@
 import sys
 
-# registers and instructions
 registers = {f"R{i}": format(i, "05b") for i in range(32)}
-registers["ZR"] = "00000"
-registers["CMP"] = "11110"
-registers["LR"] = "11111"
+registers["ZR"] = registers["R0"]
+registers["SP"] = registers["R30"]
+registers["LR"] = registers["R31"]
 
 instruction_set = {
-    # expected count is the expected number of tokens in the instruction's line (including the instruction itself)
-    # Arithemtic and logic instructions
-    "ADD":  {"opcode": "000000", "type": "three_reg", "expected_count": 4},
-    "SUB":  {"opcode": "000001", "type": "three_reg", "expected_count": 4},
-    "MUL":  {"opcode": "000010", "type": "three_reg", "expected_count": 4},
-    "DIV":  {"opcode": "000011", "type": "three_reg", "expected_count": 4},
-    "AND":  {"opcode": "000100", "type": "three_reg", "expected_count": 4},
-    "ORR":  {"opcode": "000101", "type": "three_reg", "expected_count": 4},
-    "XOR":  {"opcode": "000110", "type": "three_reg", "expected_count": 4},
-    "LSL":  {"opcode": "000111", "type": "three_reg", "expected_count": 4},
-    "LSR":  {"opcode": "001000", "type": "three_reg", "expected_count": 4},
-    "ASR":  {"opcode": "001001", "type": "three_reg", "expected_count": 4},
-    "NEG":  {"opcode": "001010", "type": "one_reg",   "expected_count": 2},
+    # ALU: OP Rd, Rn, Rm / Imm  (I bit in encoding)
+    "ADD":  {"opcode": "000000", "kind": "alu",     "mnemonic": "ADD"},
+    "SUB":  {"opcode": "000001", "kind": "alu",     "mnemonic": "SUB"},
+    "MUL":  {"opcode": "000010", "kind": "alu",     "mnemonic": "MUL"},
+    "DIV":  {"opcode": "000011", "kind": "alu",     "mnemonic": "DIV"},
+    "AND":  {"opcode": "000100", "kind": "alu",     "mnemonic": "AND"},
+    "ORR":  {"opcode": "000101", "kind": "alu",     "mnemonic": "ORR"},
+    "XOR":  {"opcode": "000110", "kind": "alu",     "mnemonic": "XOR"},
+    "LSL":  {"opcode": "000111", "kind": "alu",     "mnemonic": "LSL"},
+    "LSR":  {"opcode": "001000", "kind": "alu",     "mnemonic": "LSR"},
+    "ASR":  {"opcode": "001001", "kind": "alu",     "mnemonic": "ASR"},
+    "NEG":  {"opcode": "001010", "kind": "neg",     "mnemonic": "NEG"},  # unary
 
-    "ADDI": {"opcode": "001011", "type": "two_reg",   "expected_count": 4},
-    "SUBI": {"opcode": "001100", "type": "two_reg",   "expected_count": 4},
-    "MULI": {"opcode": "001101", "type": "two_reg",   "expected_count": 4},
-    "DIVI": {"opcode": "001110", "type": "two_reg",   "expected_count": 4},
+    # Memory: LDR/STR Rd, [Rn, Rm/Imm], ADR Rd, Label
+    "LDR":  {"opcode": "010000", "kind": "mem",     "mnemonic": "LDR"},
+    "STR":  {"opcode": "010001", "kind": "mem",     "mnemonic": "STR"},
+    "ADR":  {"opcode": "010010", "kind": "adr",     "mnemonic": "ADR"},  # PC-relative
 
-    # Memory instructions
-    "LDR":  {"opcode": "010000", "type": "three_reg", "expected_count": 4},
-    "STR":  {"opcode": "010001", "type": "three_reg", "expected_count": 4},
-    "ADR":  {"opcode": "010010", "type": "reg_label", "expected_count": 3},
+    # Branches: PC-relative, 20-bit signed
+    "B":    {"opcode": "100000", "kind": "branch",  "mnemonic": "B"},
+    "BL":   {"opcode": "100001", "kind": "branch",  "mnemonic": "BL"},
+    "BEQ":  {"opcode": "100010", "kind": "branch",  "mnemonic": "BEQ"},
+    "BNE":  {"opcode": "100011", "kind": "branch",  "mnemonic": "BNE"},
+    "BGT":  {"opcode": "100100", "kind": "branch",  "mnemonic": "BGT"},
+    "BLT":  {"opcode": "100101", "kind": "branch",  "mnemonic": "BLT"},
+    "BGE":  {"opcode": "100110", "kind": "branch",  "mnemonic": "BGE"},
+    "BLE":  {"opcode": "100111", "kind": "branch",  "mnemonic": "BLE"},
+    "CBZ":  {"opcode": "110101", "kind": "cb",      "mnemonic": "CBZ"},
+    "CBNZ": {"opcode": "110110", "kind": "cb",      "mnemonic": "CBNZ"},
 
-    # Branch instructions
-    "B":    {"opcode": "100000", "type": "label",     "expected_count": 2},
-    "BL":   {"opcode": "100001", "type": "label",     "expected_count": 2},
-    "BEQ":  {"opcode": "100010", "type": "label",     "expected_count": 2},
-    "BNE":  {"opcode": "100011", "type": "label",     "expected_count": 2},
-    "BGT":  {"opcode": "100100", "type": "label",     "expected_count": 2},
-    "BLT":  {"opcode": "100101", "type": "label",     "expected_count": 2},
-    "BGE":  {"opcode": "100110", "type": "label",     "expected_count": 2},
-    "BLE":  {"opcode": "100111", "type": "label",     "expected_count": 2},
-
-    # Special instructions
-    "NOP":  {"opcode": "110000", "type": "no_op",     "expected_count": 1},
-    "RET":  {"opcode": "110001", "type": "no_op",     "expected_count": 1},
-    "MOV":  {"opcode": "110010", "type": "dynamic",   "expected_count": 0},
-    "MOVI": {"opcode": "110011", "type": "dynamic",   "expected_count": 0},
-    "CMP":  {"opcode": "110100", "type": "two_reg",   "expected_count": 3},
-    "CBZ":  {"opcode": "110101", "type": "reg_label", "expected_count": 3},
-    "CBNZ": {"opcode": "110110", "type": "reg_label", "expected_count": 3},
+    # Special / misc
+    "NOP":  {"opcode": "110000", "kind": "nop",     "mnemonic": "NOP"},
+    "RET":  {"opcode": "110001", "kind": "ret",     "mnemonic": "RET"},
+    "MOV":  {"opcode": "110010", "kind": "mov",     "mnemonic": "MOV"},  # ALU-like
+    "CMP":  {"opcode": "110100", "kind": "cmp",     "mnemonic": "CMP"},  # Rn, Rm/Imm
 }
 
-# resolves the register name to its binary representation
-def resolve_register(register) -> str:
+def resolve_register(reg: str) -> str:
     try:
-        return registers[register.upper()]
+        return registers[reg.upper()]
     except KeyError:
-        print("Error: Invalid register: " + register)
+        print(f"Error: Invalid register: {reg}")
         sys.exit(1)
 
-# resolves the opcode to its binary representation
-def resolve_opcode(opcode) -> str:
+
+def resolve_opcode(mnemonic: str) -> str:
     try:
-        return instruction_set[opcode.upper()]["opcode"]
+        return instruction_set[mnemonic.upper()]["opcode"]
     except KeyError:
-        print("Error: Invalid opcode: " + opcode)
+        print(f"Error: Invalid opcode: {mnemonic}")
         sys.exit(1)
 
-# resolves the immediate value to its binary representation
-def resolve_immediate(imm) -> str:
+
+def parse_immediate(imm_str: str, bits: int, signed: bool = False) -> str:
+    """
+    Parse an immediate and return a bits-wide binary string, with optional sign-extension.
+    """
     try:
-        return format(int(imm), "012b")
+        val = int(imm_str, 0)  # supports decimal, 0x.., 0b..
     except ValueError:
-        print("Error: Invalid immediate value: " + imm)
+        print(f"Error: Invalid immediate value: {imm_str}")
         sys.exit(1)
+
+    if signed:
+        min_val = -(1 << (bits - 1))
+        max_val = (1 << (bits - 1)) - 1
+        if val < min_val or val > max_val:
+            print(f"Error: Signed immediate {val} out of range for {bits} bits.")
+            sys.exit(1)
+        if val < 0:
+            val = (1 << bits) + val
+    else:
+        if val < 0 or val >= (1 << bits):
+            print(f"Error: Unsigned immediate {val} out of range for {bits} bits.")
+            sys.exit(1)
+
+    return format(val, f"0{bits}b")

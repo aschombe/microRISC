@@ -10,11 +10,11 @@ Branches use a 20-bit signed offset from the current PC. For conditional branche
       main: (
         bits: 32,
         ranges: (
-          "31-26": (name: "opcode", description: "Operation code, see table below"),
-          "25":    (name: "unused / I"),
-          "24-20": (name: "unused"),
-          "19-15": (name: "Rn", description: "Used by CBZ/CBNZ; unused by B/BL/cond branches"),
-          "19-0":  (name: "Offset", description: "20-bit signed offset or label"),
+          "31-26": (name: "op", description: "Operation code, see table below"),
+          "25":    (name: "I", description: "Unused for branching instructions"),
+          "24-20": (name: "res", description: "Reserved bits, unused"),
+          "19-15": (name: "Rn", description: "Used by CBZ/CBNZ; zeroed for ADR/B/BL/cond branches"),
+          "14-0":  (name: "off", description: "20-bit signed PC-relative offset"),
         ),
       ),
     ),
@@ -26,19 +26,20 @@ Branches use a 20-bit signed offset from the current PC. For conditional branche
 #table(
   columns: 3,
   table.header([Syntax], [Opcode], [Notes]),
-  [B Label],   [100000], [Unconditional branch with 20-bit signed offset],
-  [BL Label],  [100001], [Branch with link; LR gets return address],
-  [BEQ Label], [100010], [Branch if CMP indicates equal],
-  [BNE Label], [100011], [Branch if CMP indicates not equal],
-  [BGT Label], [100100], [Branch if greater than],
-  [BLT Label], [100101], [Branch if less than],
-  [BGE Label], [100110], [Branch if greater or equal],
-  [BLE Label], [100111], [Branch if less or equal],
+  [ADR Rd, Label], [010010], [PC-relative address of label in 20-bit Offset field],
+  [B Label],       [100000], [Unconditional branch with 20-bit signed offset],
+  [BL Label],      [100001], [Branch with link; LR gets return address],
+  [BEQ Label],     [100010], [Branch if CMP indicates equal],
+  [BNE Label],     [100011], [Branch if CMP indicates not equal],
+  [BGT Label],     [100100], [Branch if greater than],
+  [BLT Label],     [100101], [Branch if less than],
+  [BGE Label],     [100110], [Branch if greater or equal],
+  [BLE Label],     [100111], [Branch if less or equal],
 )
 
 #table(
   columns: 3,
   table.header([Syntax], [Opcode], [Notes]),
-  [CBZ Rn, Label],  [110101], [Branch if Rn == 0],
-  [CBNZ Rn, Label], [110110], [Branch if Rn != 0],
+  [CBZ Rn, Label],  [110101], [Branch if Rn == 0, using 20-bit signed offset],
+  [CBNZ Rn, Label], [110110], [Branch if Rn != 0, using 20-bit signed offset],
 )

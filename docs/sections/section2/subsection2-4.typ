@@ -8,12 +8,12 @@
       main: (
         bits: 32,
         ranges: (
-          "31-26": (name: "opcode", description: "Operation code, see table below"),
-          "25":    (name: "I / unused"),
-          "24-20": (name: "Rd / unused"),
-          "19-15": (name: "Rn"),
-          "14-10": (name: "Rm"),
-          "9-0":   (name: "Imm / unused"),
+          "31-26": (name: "op", description: "Operation code, see table below"),
+          "25":    (name: "I", description: "Immediate flag, selects between Rm and Imm for MOV and CMP; ignored for NOP, RET"),
+          "24-20": (name: "Rd", description: "Destination register for MOV; ignored for CMP, NOP, RET"),
+          "19-15": (name: "Rn", description: "First source register for CMP; ignored for MOV, NOP, RET"),
+          "14-10": (name: "Rm", description: "Second source register for CMP when I = 0; ignored for MOV, NOP, RET"),
+          "9-0":   (name: "Imm", description: "Immediate operand for MOV and CMP when I = 1; ignored for NOP, RET"),
         ),
       ),
     ),

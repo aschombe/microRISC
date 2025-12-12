@@ -1,182 +1,111 @@
-import re, sys
+import re
+import sys
 
-# extract the .text section from the input file
-def extract_text(lines) -> list:
-    text_section = []
-    for i, line in enumerate(lines):
-        if line.strip() == ".text":
-            for j in range(i + 1, len(lines)):
-                if lines[j].strip() == ".data":
-                    break
-                text_section.append(lines[j])
+def extract_text(lines) -> list[str]:
+    in_text = False
+    text_section: list[str] = []
+    for line in lines:
+        stripped = line.strip()
+        if stripped.lower() == "<text>":
+            in_text = True
+            continue
+        if stripped.lower() == "<data>":
+            in_text = False
+            continue
+        if in_text:
+            text_section.append(line)
     return text_section
 
-# extract the .data section from the input file
-def extract_data(lines) -> list:
-    data_section = []
-    for i, line in enumerate(lines):
-        if line.strip() == ".data":
-            for j in range(i + 1, len(lines)):
-                if lines[j].strip() == ".text":
-                    break
-                data_section.append(lines[j])
+
+def extract_data(lines) -> list[str]:
+    in_data = False
+    data_section: list[str] = []
+    for line in lines:
+        stripped = line.strip()
+        if stripped.lower() == "<data>":
+            in_data = True
+            continue
+        if stripped.lower() == "<text>":
+            in_data = False
+            continue
+        if in_data:
+            data_section.append(line)
     return data_section
 
-# tokenize an instruction line
-def tokenize_instruction(line) -> tuple:
-    if line.startswith("//"):
-        return None, [], None
 
+_block_comment_re = re.compile(r"/\*.*?\*/", re.DOTALL)
+
+def strip_comments(line: str) -> str:
     line = re.sub(r"//.*", "", line)
-    line = line.strip()
-    if not line:
-        return None, [], None
+    line = _block_comment_re.sub("", line)
+    return line
 
-    instr = None
-    operands = []
+def tokenize_instruction(line: str) -> tuple[str | None, str | None, list[str]]:
+    """
+    Return (label, instr, operands) where:
+    - label is a string or None
+    - instr is an uppercased mnemonic or None
+    - operands is a list of raw operand strings
+    """
+    line_no_comments = strip_comments(line).strip()
+    if not line_no_comments:
+        return None, None, []
+
     label = None
+    instr = None
+    operands: list[str] = []
 
-    if re.match(r"^[a-zA-Z_][a-zA-Z0-9_]*:$", line):
-        label = line[:-1]
-        return instr, operands, label
+    # Label only
+    if re.match(r"^[A-Za-z_][A-Za-z0-9_]*:$", line_no_comments):
+        label = line_no_comments[:-1]
+        return label, None, []
 
-    # rewrite the patterns to support register zr
-    two_reg_imm_pattern = r"^(ADDI|SUBI|MULI|DIVI) (ZR|R\d{1,2}), (ZR|R\d{1,2}), \d+$"
-    three_reg_pattern = r"^(ADD|SUB|MUL|DIV|AND|ORR|XOR|LSL|LSR|ASR) (ZR|R\d{1,2}), (ZR|R\d{1,2}), (ZR|R\d{1,2})$"
-    one_reg_pattern = r"^(NEG) (ZR|R\d{1,2})$"
-    three_reg_mem_pattern = r"^(LDR|STR) (ZR|R\d{1,2}), \[(ZR|R\d{1,2}), (ZR|R\d{1,2})\]$"
-    reg_label_pattern = r"^(ADR|CBZ|CBNZ) (ZR|R\d{1,2}), [a-zA-Z_][a-zA-Z0-9_]*$"
-    label_pattern = r"^(B|BEQ|BNE|BGT|BLT|BGE|BLE) [a-zA-Z_][a-zA-Z0-9_]*$"
-    cmp_pattern = r"^(CMP) (ZR|R\d{1,2}), (ZR|R\d{1,2})$"
-    nop_pattern = r"^(NOP)$"
-    mov_pattern = r"^(MOV) (ZR|R\d{1,2}), (ZR|R\d{1,2})$"
-    movi_pattern = r"^(MOVI) (ZR|R\d{1,2}), \d+$"
+    # Label + instruction
+    if ":" in line_no_comments:
+        before, after = line_no_comments.split(":", 1)
+        maybe_label = before.strip()
+        if re.match(r"^[A-Za-z_][A-Za-z0-9_]*$", maybe_label):
+            label = maybe_label
+            line_no_comments = after.strip()
 
-    patterns = {
-        "three_reg": three_reg_pattern,
-        "one_reg": one_reg_pattern,
-        "three_reg_mem": three_reg_mem_pattern,
-        "reg_label": reg_label_pattern,
-        "label": label_pattern,
-        "cmp": cmp_pattern,
-        "nop": nop_pattern,
-        "mov": mov_pattern,
-        "movi": movi_pattern,
-        "two_reg_imm": two_reg_imm_pattern,
-    }
+    if not line_no_comments:
+        return label, None, []
 
-    for instr_type, pattern in patterns.items():
-        if re.match(pattern, line, re.IGNORECASE):
-            tokens = re.split(r"\s|,|\s*,\s*", line)
-            tokens = [token.strip() for token in tokens if token]
+    # Split instruction and operands
+    parts = line_no_comments.split(None, 1)
+    instr = parts[0].upper()
+    rest = parts[1] if len(parts) > 1 else ""
 
-            # strip brackets from memory instructions
-            if instr_type == "three_reg_mem":
-                tokens[2] = tokens[2][1:]
-                tokens[3] = tokens[3][:-1]
+    rest = rest.replace("[", " [ ").replace("]", " ] ")
+    tokens = [t for t in re.split(r"[,\s]+", rest) if t]
+    operands = tokens
 
-            instr = tokens[0].upper()
-            operands = tokens[1:]
-            return instr, operands, label
-        
-    print(f"Error: Invalid instruction format in line: '{line}'")
-    sys.exit(1)
+    return label, instr, operands
 
-# tokenize a data line
-def tokenize_data(line, labels, adr_labels) -> tuple:
-    if line.startswith("//"):
-        return None, [], None
 
-    # remove comments
-    line = re.sub(r"//.*", "", line)
-
-    line = line.strip()
-
-    # split the line on spaces, then on commas
-    tokens = re.split(r"\s|:", line)
-
-    # remove empty tokens
-    tokens = [token for token in tokens if token]
-
-    # remove leading and trailing whitespaces from each token
-    tokens = [token.strip() for token in tokens]
-
-    values = []
-
-    # check if the line is empty
-    if not line:
-        return label, values
-
-    # use regex to check if its a label, and make sure theres no instruction on the same line (throw an error)
-    if re.match(r"^[a-zA-Z_][a-zA-Z0-9_]*:$", line):
-        if len(tokens) > 1:
-            print(f"Error: Label '{line}' must be on its own line.")
-            sys.exit(1)
-        label = line[:-1]
-        return label, values
-
-    # based on what the instruction is, tokenize it accordingly
-    label = tokens[0].strip()
-
-    # check if the label is already in the labels dictionary
-    if label in labels:
-        print(f"Error: Label '{label}' already defined.")
-        sys.exit(1)
-
-    # check if the label is already in the adr_labels dictionary
-    if label in adr_labels:
-        print(f"Error: Label '{label}' already defined.")
-        sys.exit(1)
-
-    values = [token.strip() for token in tokens[1].split(",")]
-
-    return label, values
-
-# tokenize the input file
-def tokenize(lines, labels, adr_labels):
-    instructions = []
-    data = []
-
-    text_section = extract_text(lines)
-    data_section = extract_data(lines)
-
-    for line in text_section:
-        instr, operands, label = tokenize_instruction(line)
-        # # handle psuedo instructions here:
-        # # if the instruction is a MOV, convert it to an ADDI with ZR
-        # if instr == "MOV":
-        #     instr = "ADD"
-        #     operands.append("ZR")
-
-        # # if the instruction is a MOVI, convert it to an ADDI with an immediate value of the second operand
-        # if instr == "MOVI":
-        #     instr = "ADDI"
-        #     operands.append(operands[1])
-        #     operands[1] = operands[0]
-        #     operands[0] = "ZR"
-
-        # # if the instruction is a CBZ, convert it to a CMP and BEQ with ZR
-        # if instr == "CBZ":
-        #     instr = "CMP"
-        #     operands.append("ZR")
-        #     instructions.append((instr, operands, label))
-        #     instr = "BEQ"
-        #     operands = [operands[0], operands[2]]
-
-        # # if the instruction is a CBNZ, convert it to a CMP and BNE with ZR
-        # if instr == "CBNZ":
-        #     instr = "CMP"
-        #     operands.append("ZR")
-        #     instructions.append((instr, operands, label))
-        #     instr = "BNE"
-        #     operands = [operands[0], operands[2]]
-
-        # print(instr, operands, label)
-
-        instructions.append((instr, operands, label))
-    
-    for line in data_section:
-        label, values = tokenize_data(line, labels, adr_labels)
-        data.append((label, values))
-    
-    return instructions, data
+def tokenize_data_line(line: str):
+    """
+    Minimal data tokenization for now:
+    - label: value1, value2, ...
+    Line example:
+      myvar: 1, 2, 3
+    """
+    pass
+    # line_no_comments = strip_comments(line).strip()
+    # if not line_no_comments:
+    #     return None, []
+    #
+    # # Label only
+    # if re.match(r"^[A-Za-z_][A-Za-z0-9_]*:$", line_no_comments):
+    #     label = line_no_comments[:-1]
+    #     return label, []
+    #
+    # if ":" not in line_no_comments:
+    #     print(f"Error in data section: missing ':' in line: {line_no_comments}")
+    #     sys.exit(1)
+    #
+    # label, rest = line_no_comments.split(":", 1)
+    # label = label.strip()
+    #
+    # values = [v.strip() for v in rest.split(",") if v.strip()]
+    # return label, values
